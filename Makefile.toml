@@ -1,0 +1,53 @@
+[config]
+default_to_workspace = false
+skip_core_tasks = true
+
+[tasks.check]
+dependencies = ["format", "build", "build-unity", "lint", "license"]
+
+[tasks.format]
+ignore_errors = true
+command = "cargo"
+args = ["fmt"]
+
+[tasks.lint]
+command = "cargo"
+args = ["clippy", "${@}", "--", "-D", "warnings"]
+
+[tasks.build]
+command = "cargo"
+args = ["build", "--release", "${@}"]
+
+[tasks.build-unity]
+dependencies = ["build-unity-main", "build-unity-post"]
+
+[tasks.build-unity-main]
+command = "cargo"
+args = ["build", "--release", "--features", "unity", "${@}"]
+
+[tasks.build-unity-post]
+linux_alias = "build-unity-post-nix"
+windows_alias = "build-unity-post-win"
+mac_alias = "build-unity-post-nix"
+
+[tasks.build-unity-post-nix]
+script_runner = "@shell"
+script = '''
+cp ./target/release/autd3-simulator target/release/autd3-simulator-unity
+'''
+
+[tasks.build-unity-post-win]
+script_runner = "@shell"
+script = '''
+cp ./target/release/autd3-simulator.exe target/release/autd3-simulator-unity.exe
+'''
+
+[tasks.update]
+command = "cargo"
+args = ["update"]
+
+[tasks.license]
+cwd = "./tools/license-checker"
+command = "cargo"
+args = ["run"]
+dependencies = ["update"]
