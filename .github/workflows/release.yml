@@ -31,14 +31,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            name: win
+            arch: x64
+          - os: macos-latest
+            name: macos
+            arch: aarch64
+          - os: ubuntu-latest
+            name: linux
+            arch: x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-build
         with:
           os: ${{ matrix.os }}
-      - uses: actions/setup-node@v4
+      - id: get_version
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            return 'autd3-simulator'+context.payload.ref.replace(/refs\/tags\//, '')+'-${{ matrix.name }}-${{ matrix.arch }}';
       - run: cargo make build
       - uses: actions/download-artifact@v4
         with:
@@ -52,7 +67,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           upload_url: ${{ steps.get_release_info.outputs.content }}
           asset_path: ./target/release/autd3-simulator${{ matrix.os == 'windows-latest' && '.exe' || '' }}
-          asset_name: autd3-simulator${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          asset_name: ${{ steps.get_version.outputs.result }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
           asset_content_type: 'application/octet-stream'
 
   publish-unity:
@@ -63,14 +78,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            name: win
+            arch: x64
+          - os: macos-latest
+            name: macos
+            arch: aarch64
+          - os: ubuntu-latest
+            name: linux
+            arch: x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-build
         with:
           os: ${{ matrix.os }}
-      - uses: actions/setup-node@v4
+      - id: get_version
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            return 'autd3-simulator-unity'+context.payload.ref.replace(/refs\/tags\//, '')+'-${{ matrix.name }}-${{ matrix.arch }}';
       - run: cargo make build-unity
       - uses: actions/download-artifact@v4
         with:
@@ -84,5 +114,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           upload_url: ${{ steps.get_release_info.outputs.content }}
           asset_path: ./target/release/autd3-simulator-unity${{ matrix.os == 'windows-latest' && '.exe' || '' }}
-          asset_name: autd3-simulator-unity${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          asset_name: ${{ steps.get_version.outputs.result }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
           asset_content_type: 'application/octet-stream'
