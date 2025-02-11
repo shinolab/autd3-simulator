@@ -1,3 +1,5 @@
 *.ini
 *.json
 target/
+*.zip
+*.tar.gz
