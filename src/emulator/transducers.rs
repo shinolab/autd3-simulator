@@ -2,8 +2,8 @@ use autd3_driver::geometry::Geometry;
 use bytemuck::{Pod, Zeroable};
 
 use crate::{
-    common::transform::{to_gl_pos, to_gl_rot},
     Quaternion, Vector3, Vector4,
+    common::transform::{to_gl_pos, to_gl_rot},
 };
 
 #[repr(C)]

@@ -6,12 +6,12 @@ mod transducer_renderer;
 use std::{num::NonZeroU32, sync::Arc};
 
 use crate::{
-    common::camera::{create_camera, Camera, CameraPerspective},
+    Matrix4, State, Vector3,
+    common::camera::{Camera, CameraPerspective, create_camera},
     emulator::EmulatorWrapper,
     error::{Result, SimulatorError},
     event::{EventResult, UserEvent},
     update_flag::UpdateFlag,
-    Matrix4, State, Vector3,
 };
 
 use depth_texture::DepthTexture;

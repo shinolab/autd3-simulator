@@ -2,13 +2,13 @@ use autd3_driver::defined::mm;
 use bytemuck::{NoUninit, Pod, Zeroable};
 use egui_wgpu::wgpu;
 use std::{borrow::Cow, mem};
-use wgpu::{util::DeviceExt, ComputePass, Device, Queue, RenderPass, SurfaceConfiguration};
+use wgpu::{ComputePass, Device, Queue, RenderPass, SurfaceConfiguration, util::DeviceExt};
 
 use crate::{
+    Matrix4, Vector2, Vector3, Vector4,
     common::transform::{to_gl_pos, to_gl_rot},
     emulator::EmulatorWrapper,
     state::State,
-    Matrix4, Vector2, Vector3, Vector4,
 };
 
 use super::DepthTexture;

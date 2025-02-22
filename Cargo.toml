@@ -1,7 +1,7 @@
 [package]
 name = "autd3-simulator"
 version = "30.0.0"
-edition = "2021"
+edition = "2024"
 authors = ["shun suzuki <suzuki@hapis.k.u-tokyo.ac.jp>"]
 
 license = "MIT"

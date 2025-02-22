@@ -6,7 +6,7 @@ use autd3_driver::{
 use glam::EulerRot;
 use serde::{Deserialize, Serialize};
 
-use crate::{common::color_map::ColorMap, Quaternion, Vector2, Vector3, ZPARITY};
+use crate::{Quaternion, Vector2, Vector3, ZPARITY, common::color_map::ColorMap};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CameraState {
