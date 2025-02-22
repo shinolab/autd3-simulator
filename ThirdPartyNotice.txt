@@ -50,7 +50,7 @@ anstyle 1.0.10 (Apache-2.0 OR MIT)
 https://github.com/rust-cli/anstyle.git
 ---------------------------------------------------------
 
-anyhow 1.0.95 (Apache-2.0 OR MIT)
+anyhow 1.0.96 (Apache-2.0 OR MIT)
 https://github.com/dtolnay/anyhow
 ---------------------------------------------------------
 
@@ -86,39 +86,39 @@ atomic-waker 1.1.2 (Apache-2.0 OR MIT)
 https://github.com/smol-rs/atomic-waker
 ---------------------------------------------------------
 
-autd3 29.0.0 (MIT)
+autd3 30.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-core 29.0.0 (MIT)
+autd3-core 30.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-derive 29.0.0 (MIT)
+autd3-derive 30.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-driver 29.0.0 (MIT)
+autd3-driver 30.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-firmware-emulator 29.0.0 (MIT)
+autd3-firmware-emulator 30.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-gain-holo 29.0.0 (MIT)
+autd3-gain-holo 30.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-link-simulator 29.0.0 (MIT)
+autd3-link-simulator 30.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-protobuf 29.0.0 (MIT)
+autd3-protobuf 30.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-simulator 29.0.0 (MIT)
+autd3-simulator 30.0.0 (MIT)
 https://github.com/shinolab/autd3-simulator
 ---------------------------------------------------------
 
@@ -170,7 +170,7 @@ bumpalo 3.17.0 (Apache-2.0 OR MIT)
 https://github.com/fitzgen/bumpalo
 ---------------------------------------------------------
 
-bvh 0.10.0 (MIT)
+bvh 0.11.0 (MIT)
 https://github.com/svenstaro/bvh
 ---------------------------------------------------------
 
@@ -202,7 +202,7 @@ calloop-wayland-source 0.3.0 (MIT)
 https://github.com/smithay/calloop-wayland-source
 ---------------------------------------------------------
 
-camera_controllers 0.34.0 (MIT)
+camera_controllers 0.35.2 (MIT)
 https://github.com/PistonDevelopers/camera_controllers.git
 ---------------------------------------------------------
 
@@ -214,11 +214,11 @@ cfg-if 1.0.0 (Apache-2.0 OR MIT)
 https://github.com/alexcrichton/cfg-if
 ---------------------------------------------------------
 
-clap 4.5.28 (Apache-2.0 OR MIT)
+clap 4.5.30 (Apache-2.0 OR MIT)
 https://github.com/clap-rs/clap
 ---------------------------------------------------------
 
-clap_builder 4.5.27 (Apache-2.0 OR MIT)
+clap_builder 4.5.30 (Apache-2.0 OR MIT)
 https://github.com/clap-rs/clap
 ---------------------------------------------------------
 
@@ -240,6 +240,10 @@ https://github.com/Marwes/combine
 
 concurrent-queue 2.5.0 (Apache-2.0 OR MIT)
 https://github.com/smol-rs/concurrent-queue
+---------------------------------------------------------
+
+const_fn 0.4.11 (Apache-2.0 OR MIT)
+https://github.com/taiki-e/const_fn
 ---------------------------------------------------------
 
 core-foundation 0.9.4 (Apache-2.0 OR MIT)
@@ -282,7 +286,7 @@ csv 1.3.1 (MIT OR Unlicense)
 https://github.com/BurntSushi/rust-csv
 ---------------------------------------------------------
 
-csv-core 0.1.11 (MIT OR Unlicense)
+csv-core 0.1.12 (MIT OR Unlicense)
 https://github.com/BurntSushi/rust-csv
 ---------------------------------------------------------
 
@@ -292,10 +296,6 @@ https://github.com/rust-windowing/cursor-icon
 
 deranged 0.3.11 (Apache-2.0 OR MIT)
 https://github.com/jhpratt/deranged
----------------------------------------------------------
-
-derive-new 0.7.0 (MIT)
-https://github.com/nrc/derive-new
 ---------------------------------------------------------
 
 derive_more 2.0.1 (MIT)
@@ -314,7 +314,7 @@ dlib 0.5.2 (MIT)
 https://github.com/elinorbgr/dlib
 ---------------------------------------------------------
 
-document-features 0.2.10 (Apache-2.0 OR MIT)
+document-features 0.2.11 (Apache-2.0 OR MIT)
 https://github.com/slint-ui/document-features
 ---------------------------------------------------------
 
@@ -370,8 +370,8 @@ epaint_default_fonts 0.31.0 ((MIT OR Apache-2.0) AND OFL-1.1 AND Ubuntu-font-1.0
 https://github.com/emilk/egui/tree/master/crates/epaint_default_fonts
 ---------------------------------------------------------
 
-equivalent 1.0.1 (Apache-2.0 OR MIT)
-https://github.com/cuviper/equivalent
+equivalent 1.0.2 (Apache-2.0 OR MIT)
+https://github.com/indexmap-rs/equivalent
 ---------------------------------------------------------
 
 errno 0.3.10 (Apache-2.0 OR MIT)
@@ -462,7 +462,7 @@ gimli 0.31.1 (Apache-2.0 OR MIT)
 https://github.com/gimli-rs/gimli
 ---------------------------------------------------------
 
-glam 0.29.2 (Apache-2.0 OR MIT)
+glam 0.30.0 (Apache-2.0 OR MIT)
 https://github.com/bitshifter/glam-rs
 ---------------------------------------------------------
 
@@ -494,7 +494,7 @@ gpu-descriptor-types 0.2.0 (Apache-2.0 OR MIT)
 https://github.com/zakarumych/gpu-descriptor
 ---------------------------------------------------------
 
-h2 0.4.7 (MIT)
+h2 0.4.8 (MIT)
 https://github.com/hyperium/h2
 ---------------------------------------------------------
 
@@ -574,10 +574,6 @@ itertools 0.11.0 (Apache-2.0 OR MIT)
 https://github.com/rust-itertools/itertools
 ---------------------------------------------------------
 
-itertools 0.13.0 (Apache-2.0 OR MIT)
-https://github.com/rust-itertools/itertools
----------------------------------------------------------
-
 itertools 0.14.0 (Apache-2.0 OR MIT)
 https://github.com/rust-itertools/itertools
 ---------------------------------------------------------
@@ -634,7 +630,7 @@ lock_api 0.4.12 (Apache-2.0 OR MIT)
 https://github.com/Amanieu/parking_lot
 ---------------------------------------------------------
 
-log 0.4.25 (Apache-2.0 OR MIT)
+log 0.4.26 (Apache-2.0 OR MIT)
 https://github.com/rust-lang/log
 ---------------------------------------------------------
 
@@ -678,7 +674,7 @@ minimal-lexical 0.2.1 (Apache-2.0 OR MIT)
 https://github.com/Alexhuszagh/minimal-lexical
 ---------------------------------------------------------
 
-miniz_oxide 0.8.3 (Apache-2.0 OR MIT OR Zlib)
+miniz_oxide 0.8.5 (Apache-2.0 OR MIT OR Zlib)
 https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide
 ---------------------------------------------------------
 
@@ -898,7 +894,7 @@ piston-viewport 1.0.2 (MIT)
 https://github.com/PistonDevelopers/viewport.git
 ---------------------------------------------------------
 
-piston3d-cam 0.6.0 (MIT)
+piston3d-cam 0.7.0 (MIT)
 https://github.com/pistondevelopers/cam.git
 ---------------------------------------------------------
 
@@ -946,11 +942,11 @@ profiling 1.0.16 (Apache-2.0 OR MIT)
 https://github.com/aclysma/profiling
 ---------------------------------------------------------
 
-prost 0.13.4 (Apache-2.0)
+prost 0.13.5 (Apache-2.0)
 https://github.com/tokio-rs/prost
 ---------------------------------------------------------
 
-prost-derive 0.13.4 (Apache-2.0)
+prost-derive 0.13.5 (Apache-2.0)
 https://github.com/tokio-rs/prost
 ---------------------------------------------------------
 
@@ -986,7 +982,7 @@ rand_core 0.6.4 (Apache-2.0 OR MIT)
 https://github.com/rust-random/rand
 ---------------------------------------------------------
 
-rand_core 0.9.0 (Apache-2.0 OR MIT)
+rand_core 0.9.1 (Apache-2.0 OR MIT)
 https://github.com/rust-random/rand
 ---------------------------------------------------------
 
@@ -1014,7 +1010,7 @@ redox_syscall 0.4.1 (MIT)
 https://gitlab.redox-os.org/redox-os/syscall
 ---------------------------------------------------------
 
-redox_syscall 0.5.8 (MIT)
+redox_syscall 0.5.9 (MIT)
 https://gitlab.redox-os.org/redox-os/syscall
 ---------------------------------------------------------
 
@@ -1089,15 +1085,15 @@ seq-macro 0.3.5 (Apache-2.0 OR MIT)
 https://github.com/dtolnay/seq-macro
 ---------------------------------------------------------
 
-serde 1.0.217 (Apache-2.0 OR MIT)
+serde 1.0.218 (Apache-2.0 OR MIT)
 https://github.com/serde-rs/serde
 ---------------------------------------------------------
 
-serde_derive 1.0.217 (Apache-2.0 OR MIT)
+serde_derive 1.0.218 (Apache-2.0 OR MIT)
 https://github.com/serde-rs/serde
 ---------------------------------------------------------
 
-serde_json 1.0.138 (Apache-2.0 OR MIT)
+serde_json 1.0.139 (Apache-2.0 OR MIT)
 https://github.com/serde-rs/json
 ---------------------------------------------------------
 
@@ -1125,7 +1121,7 @@ slotmap 1.0.7 (Zlib)
 https://github.com/orlp/slotmap
 ---------------------------------------------------------
 
-smallvec 1.13.2 (Apache-2.0 OR MIT)
+smallvec 1.14.0 (Apache-2.0 OR MIT)
 https://github.com/servo/rust-smallvec
 ---------------------------------------------------------
 
@@ -1165,7 +1161,7 @@ strum 0.26.3 (MIT)
 https://github.com/Peternator7/strum
 ---------------------------------------------------------
 
-strum 0.27.0 (MIT)
+strum 0.27.1 (MIT)
 https://github.com/Peternator7/strum
 ---------------------------------------------------------
 
@@ -1173,7 +1169,7 @@ strum_macros 0.26.4 (MIT)
 https://github.com/Peternator7/strum
 ---------------------------------------------------------
 
-strum_macros 0.27.0 (MIT)
+strum_macros 0.27.1 (MIT)
 https://github.com/Peternator7/strum
 ---------------------------------------------------------
 
@@ -1301,11 +1297,11 @@ type-map 0.5.0 (Apache-2.0 OR MIT)
 https://github.com/kardeiz/type-map
 ---------------------------------------------------------
 
-typenum 1.17.0 (Apache-2.0 OR MIT)
+typenum 1.18.0 (Apache-2.0 OR MIT)
 https://github.com/paholg/typenum
 ---------------------------------------------------------
 
-unicode-ident 1.0.16 ((MIT OR Apache-2.0) AND Unicode-3.0)
+unicode-ident 1.0.17 ((MIT OR Apache-2.0) AND Unicode-3.0)
 https://github.com/dtolnay/unicode-ident
 ---------------------------------------------------------
 
@@ -1461,11 +1457,15 @@ windows-interface 0.59.0 (Apache-2.0 OR MIT)
 https://github.com/microsoft/windows-rs
 ---------------------------------------------------------
 
+windows-link 0.1.0 (Apache-2.0 OR MIT)
+https://github.com/microsoft/windows-rs
+---------------------------------------------------------
+
 windows-result 0.2.0 (Apache-2.0 OR MIT)
 https://github.com/microsoft/windows-rs
 ---------------------------------------------------------
 
-windows-result 0.3.0 (Apache-2.0 OR MIT)
+windows-result 0.3.1 (Apache-2.0 OR MIT)
 https://github.com/microsoft/windows-rs
 ---------------------------------------------------------
 
@@ -1473,7 +1473,7 @@ windows-strings 0.1.0 (Apache-2.0 OR MIT)
 https://github.com/microsoft/windows-rs
 ---------------------------------------------------------
 
-windows-strings 0.3.0 (Apache-2.0 OR MIT)
+windows-strings 0.3.1 (Apache-2.0 OR MIT)
 https://github.com/microsoft/windows-rs
 ---------------------------------------------------------
 
@@ -1597,7 +1597,7 @@ winit 0.30.9 (Apache-2.0)
 https://github.com/rust-windowing/winit
 ---------------------------------------------------------
 
-winnow 0.7.2 (MIT)
+winnow 0.7.3 (MIT)
 https://github.com/winnow-rs/winnow
 ---------------------------------------------------------
 
@@ -1621,7 +1621,7 @@ zerocopy 0.7.35 (Apache-2.0 OR BSD-2-Clause OR MIT)
 https://github.com/google/zerocopy
 ---------------------------------------------------------
 
-zerocopy 0.8.17 (Apache-2.0 OR BSD-2-Clause OR MIT)
+zerocopy 0.8.20 (Apache-2.0 OR BSD-2-Clause OR MIT)
 https://github.com/google/zerocopy
 ---------------------------------------------------------
 
@@ -1629,7 +1629,7 @@ zerocopy-derive 0.7.35 (Apache-2.0 OR BSD-2-Clause OR MIT)
 https://github.com/google/zerocopy
 ---------------------------------------------------------
 
-zerocopy-derive 0.8.17 (Apache-2.0 OR BSD-2-Clause OR MIT)
+zerocopy-derive 0.8.20 (Apache-2.0 OR BSD-2-Clause OR MIT)
 https://github.com/google/zerocopy
 
 ---------------------------------------------------------

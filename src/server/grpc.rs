@@ -21,7 +21,7 @@ impl simulator_server::Simulator for SimulatorServer {
         &self,
         req: Request<Geometry>,
     ) -> Result<Response<GeometryResponse>, Status> {
-        let geometry = autd3_driver::geometry::Geometry::from_msg(&req.into_inner())?;
+        let geometry = autd3_driver::geometry::Geometry::from_msg(req.into_inner())?;
         if self
             .proxy
             .send_event(UserEvent::Server(Signal::ConfigGeometry(geometry)))
@@ -36,7 +36,7 @@ impl simulator_server::Simulator for SimulatorServer {
         &self,
         req: Request<Geometry>,
     ) -> Result<Response<GeometryResponse>, Status> {
-        let geometry = autd3_driver::geometry::Geometry::from_msg(&req.into_inner())?;
+        let geometry = autd3_driver::geometry::Geometry::from_msg(req.into_inner())?;
         if self
             .proxy
             .send_event(UserEvent::Server(Signal::UpdateGeometry(geometry)))
@@ -48,7 +48,7 @@ impl simulator_server::Simulator for SimulatorServer {
     }
 
     async fn send_data(&self, req: Request<TxRawData>) -> Result<Response<SendResponse>, Status> {
-        let tx = Vec::<autd3_driver::firmware::cpu::TxMessage>::from_msg(&req.into_inner())?;
+        let tx = Vec::<autd3_driver::firmware::cpu::TxMessage>::from_msg(req.into_inner())?;
         if self
             .proxy
             .send_event(UserEvent::Server(Signal::Send(tx)))
@@ -56,7 +56,7 @@ impl simulator_server::Simulator for SimulatorServer {
         {
             return Err(Status::unavailable("Simulator is closed"));
         }
-        Ok(Response::new(SendResponse { success: true }))
+        Ok(Response::new(SendResponse {}))
     }
 
     async fn read_data(&self, _: Request<ReadRequest>) -> Result<Response<RxMessage>, Status> {
@@ -74,6 +74,6 @@ impl simulator_server::Simulator for SimulatorServer {
         {
             return Err(Status::unavailable("Simulator is closed"));
         }
-        Ok(Response::new(CloseResponse { success: true }))
+        Ok(Response::new(CloseResponse {}))
     }
 }

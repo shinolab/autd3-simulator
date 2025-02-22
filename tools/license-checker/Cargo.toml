@@ -1,12 +1,12 @@
 [package]
 name = "license-checker"
-version = "29.0.0"
-edition = "2021"
+version = "30.0.0"
+edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.95"
+anyhow = "1.0.96"
 autd3-license-check = { path = "../autd3-license-check" }
 cargo-license = "0.6.1"
 cargo_metadata = "0.18.0"
