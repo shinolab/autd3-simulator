@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use autd3_protobuf::{
-    simulator_server, CloseRequest, CloseResponse, FromMessage, Geometry, GeometryResponse,
-    ReadRequest, RxMessage, SendResponse, TxRawData,
+    CloseRequest, CloseResponse, FromMessage, Geometry, GeometryResponse, ReadRequest, RxMessage,
+    SendResponse, TxRawData, simulator_server,
 };
 use parking_lot::RwLock;
 use tonic::{Request, Response, Status};

@@ -3,22 +3,22 @@ use std::time::Instant;
 
 use autd3_core::datagram::Segment;
 use autd3_driver::{
-    defined::{mm, ultrasound_freq, ultrasound_period, METER, ULTRASOUND_PERIOD_COUNT},
+    defined::{METER, ULTRASOUND_PERIOD_COUNT, mm, ultrasound_freq, ultrasound_period},
     ethercat::DcSysTime,
 };
 use egui::{
-    ahash::HashSet, color_picker::color_picker_color32, epaint::textures, ClippedPrimitive,
-    DragValue, FullOutput, InputState, PointerButton, Vec2b, ViewportId, ViewportIdMap,
-    ViewportInfo, ViewportOutput,
+    ClippedPrimitive, DragValue, FullOutput, InputState, PointerButton, Vec2b, ViewportId,
+    ViewportIdMap, ViewportInfo, ViewportOutput, ahash::HashSet,
+    color_picker::color_picker_color32, epaint::textures,
 };
 use egui_plot::{GridMark, Line, PlotPoints};
 use egui_wgpu::{
-    wgpu::{self, Color, CommandEncoder, LoadOp, StoreOp, TextureView},
     Renderer, ScreenDescriptor,
+    wgpu::{self, Color, CommandEncoder, LoadOp, StoreOp, TextureView},
 };
 use egui_winit::{
-    winit::{self, event::DeviceEvent},
     ActionRequested, EventResponse,
+    winit::{self, event::DeviceEvent},
 };
 use glam::{EulerRot, Quat};
 use strum::IntoEnumIterator;
@@ -30,7 +30,7 @@ use crate::emulator::EmulatorWrapper;
 use crate::event::{EventResult, UserEvent};
 use crate::state::Tab;
 use crate::update_flag::UpdateFlag;
-use crate::{error::SimulatorError, Vector3, ZPARITY};
+use crate::{Vector3, ZPARITY, error::SimulatorError};
 
 const MIN_COL_WIDTH: f32 = 120.;
 const SPACING: [f32; 2] = [2.0, 4.0];
@@ -1079,17 +1079,9 @@ impl EguiRenderer {
                             (0..T)
                                 .map(|t| {
                                     if rise <= fall {
-                                        if (rise <= t) && (t < fall) {
-                                            1.0
-                                        } else {
-                                            0.0
-                                        }
+                                        if (rise <= t) && (t < fall) { 1.0 } else { 0.0 }
                                     } else {
-                                        if (t < fall) || (rise <= t) {
-                                            1.0
-                                        } else {
-                                            0.0
-                                        }
+                                        if (t < fall) || (rise <= t) { 1.0 } else { 0.0 }
                                     }
                                 })
                                 .collect()

@@ -3,13 +3,13 @@ use bytemuck::{Pod, Zeroable};
 use egui_wgpu::wgpu;
 use image::{ImageBuffer, Rgba};
 use std::{borrow::Cow, f32::consts::PI, mem};
-use wgpu::{util::DeviceExt, Device, Queue, RenderPass, SurfaceConfiguration};
+use wgpu::{Device, Queue, RenderPass, SurfaceConfiguration, util::DeviceExt};
 
 use crate::{
+    Matrix4, Vector3, Vector4,
     common::color::{Color, Hsv},
     emulator::EmulatorWrapper,
     error::SimulatorError,
-    Matrix4, Vector3, Vector4,
 };
 
 use super::DepthTexture;

@@ -3,8 +3,8 @@ use camera_controllers::{FirstPerson, FirstPersonSettings};
 use glam::EulerRot;
 
 use crate::{
-    common::transform::{to_gl_pos, to_gl_rot},
     Quaternion, Vector3,
+    common::transform::{to_gl_pos, to_gl_rot},
 };
 
 pub fn create_camera() -> Camera<f32> {
