@@ -35,7 +35,7 @@ strum = { version = "0.27.1", default-features = false, features = ["derive"] }
 parking_lot = { version = "0.12.3", default-features = false }
 bytemuck = { version = "1.22.0", default-features = false, features = ["derive"] }
 egui-wgpu = { version = "0.31.0", default-features = false, features = ["wayland", "winit"] }
-serde_json = { version = "1.0.139", default-features = false, features = ["std"] }
+serde_json = { version = "1.0.140", default-features = false, features = ["std"] }
 bitflags = { version = "2.8.0", default-features = false }
 egui_plot = { version = "0.31.0", default-features = false }
 clap = { version = "4.5.31", default-features = false, features = ["derive", "std", "usage", "wrap_help"] }
