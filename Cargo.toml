@@ -12,7 +12,7 @@ keywords = ["autd"]
 [dependencies]
 anyhow = { version = "1.0.97" }
 autd3-core = { version = "31.0.1", default-features = false }
-autd3-driver = { version = "31.0.1", default-features = false }
+autd3-driver = { version = "32.0.0", default-features = false }
 autd3-firmware-emulator = { version = "31.0.1", default-features = false }
 autd3-link-simulator = { version = "31.0.1", default-features = false, features = ["async-trait"] }
 autd3-protobuf = { version = "31.0.1", default-features = false, features = ["async-trait", "lightweight"] }
