@@ -107,7 +107,7 @@ impl EmulatorWrapper {
                 .iter_mut()
                 .zip(drives.iter())
                 .for_each(|(tr, d)| {
-                    tr.amp = (PI * cpu.fpga().to_pulse_width(d.intensity, m) as f32
+                    tr.amp = (PI * cpu.fpga().to_pulse_width(d.intensity, m).pulse_width() as f32
                         / ULTRASOUND_PERIOD_COUNT as f32)
                         .sin();
                     tr.phase = d.phase.radian();
