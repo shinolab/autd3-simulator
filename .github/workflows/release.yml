@@ -6,8 +6,16 @@ on:
     - 'v*'
 
 jobs:
+  license:
+    name: license
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cargo make license
+
   release:
     name: create-github-release
+    needs: [license]
     runs-on: ubuntu-latest
     steps:
     - id: create_release
