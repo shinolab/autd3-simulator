@@ -923,9 +923,12 @@ impl EguiRenderer {
                             .width(ui.max_rect().width() * 0.8)
                             .height(200.)
                             .show(ui, |plot_ui| {
-                                plot_ui.line(Line::new(PlotPoints::from_iter(
-                                    m.into_iter().enumerate().map(|(i, v)| [i as f64, v as _]),
-                                )));
+                                plot_ui.line(Line::new(
+                                    "",
+                                    PlotPoints::from_iter(
+                                        m.into_iter().enumerate().map(|(i, v)| [i as f64, v as _]),
+                                    ),
+                                ));
                             });
                     });
                 });
@@ -1120,12 +1123,15 @@ impl EguiRenderer {
                             .width(ui.max_rect().width() * 0.8)
                             .height(100.)
                             .show(ui, |plot_ui| {
-                                plot_ui.line(Line::new(PlotPoints::from_iter(
-                                    gpio_out
-                                        .into_iter()
-                                        .enumerate()
-                                        .map(|(i, v)| [i as f64, v as _]),
-                                )));
+                                plot_ui.line(Line::new(
+                                    "",
+                                    PlotPoints::from_iter(
+                                        gpio_out
+                                            .into_iter()
+                                            .enumerate()
+                                            .map(|(i, v)| [i as f64, v as _]),
+                                    ),
+                                ));
                             });
                     });
                 });
