@@ -1075,7 +1075,7 @@ impl EguiRenderer {
                                 cpu.fpga().to_pulse_width(d.intensity, m).pulse_width() as u32;
                             const T: u32 = ULTRASOUND_PERIOD_COUNT as u32;
                             let rise = (phase + T - pulse_width / 2) % T;
-                            let fall = (phase + (pulse_width + 1) / 2) % T;
+                            let fall = (phase + pulse_width.div_ceil(2)) % T;
                             #[allow(clippy::collapsible_else_if)]
                             (0..T)
                                 .map(|t| {
