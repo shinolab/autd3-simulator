@@ -166,9 +166,9 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "autd3"
-version = "32.0.1"
+version = "32.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "832ed23c986706a56e79ab618d69e4cb1e27c3eecd1a9864469e12b435e36c7a"
+checksum = "980aea295e68d14a12d78abbc6679b4f0daa485eade87ff7ce25e1ab3e46dc5b"
 dependencies = [
  "autd3-core",
  "autd3-derive",
@@ -189,9 +189,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-core"
-version = "32.0.1"
+version = "32.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c870755ca6038fe39d7693330cc8e6a3c3bb491bcff90e9d4efd91b461e82a66"
+checksum = "3ad075dd1c3cbd3dc20b312334e8373c22b9d42fb61070d8db4f30f7ab11f395"
 dependencies = [
  "async-trait",
  "autd3-derive",
@@ -210,9 +210,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-derive"
-version = "32.0.1"
+version = "32.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d00e26b38621040183c1c319251fd6ef1ec733b0f0cacf9af254d53efc70775e"
+checksum = "6edd1493ba26f6df51f5469db1cb7bd36f4d0510b9943f8084d1864675abb52b"
 dependencies = [
  "quote",
  "syn",
@@ -220,9 +220,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-driver"
-version = "32.0.1"
+version = "32.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5670fbae9577633a203c59287ce55bb6bb96b2435a8a44130df0fd65efffe5f"
+checksum = "0ca75c39a28290daa2fc98b90cf4517288b0c84c902446e7dce89642bfd3812b"
 dependencies = [
  "autd3-core",
  "autd3-derive",
@@ -243,9 +243,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-firmware-emulator"
-version = "32.0.1"
+version = "32.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72caea02aba689a05fd59b3d5246deafb813da1d3614cd6125967a295a2b90ce"
+checksum = "81af0bf7e626bed7d9a2f4087b4d5e7ef2f0566528a2fe7b549f95efb223d931"
 dependencies = [
  "autd3-driver",
  "bitfield-struct",
@@ -256,9 +256,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-gain-holo"
-version = "32.0.1"
+version = "32.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7d1b88b351f007f9b9214c245048488ed8331befc7d97cc55ac61f3b6b8c0e7"
+checksum = "f70fc8281912e9c9a3e107409ee5cc0ca87e4dc56ad0e5c97314107cbd2b3284"
 dependencies = [
  "autd3-core",
  "derive_more",
@@ -272,9 +272,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-link-simulator"
-version = "32.0.1"
+version = "32.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4365ab703f9ac0423bce4e7cdaf5fd5fd7b7e3ebd7f4ced7c3a312fdcdf5feda"
+checksum = "28159f46231c3d2dac20de52ef6fe2bc0cbb17923588b76a79f96dec032f3b38"
 dependencies = [
  "autd3-core",
  "autd3-protobuf",
@@ -284,9 +284,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-protobuf"
-version = "32.0.1"
+version = "32.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d864d8bbe9c029a16cfabf2c95114e5730740b33cfb309431872b3918c19b63"
+checksum = "8a7d33de03406532c3b404a06f5d0e81f48699e5924ae18bd737c2fa688c1ea2"
 dependencies = [
  "autd3",
  "autd3-core",
@@ -302,7 +302,7 @@ dependencies = [
 
 [[package]]
 name = "autd3-simulator"
-version = "32.0.1"
+version = "32.1.0"
 dependencies = [
  "anyhow",
  "autd3-core",
@@ -561,9 +561,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.18"
+version = "1.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "525046617d8376e3db1deffb079e91cef90a89fc3ca5c185bbf8c9ecdd15cd5c"
+checksum = "8e3a13707ac958681c13b39b458c073d0d9bc8a22cb1b2f4c8e55eb72c13f362"
 dependencies = [
  "jobserver",
  "libc",
@@ -1267,9 +1267,9 @@ dependencies = [
 
 [[package]]
 name = "h2"
-version = "0.4.8"
+version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5017294ff4bb30944501348f6f8e42e6ad28f42c8bbef7a74029aff064a4e3c2"
+checksum = "75249d144030531f8dee69fe9cea04d3edf809a017ae445e2abdff6629e86633"
 dependencies = [
  "atomic-waker",
  "bytes",
@@ -1546,9 +1546,9 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "libc"
-version = "0.2.171"
+version = "0.2.172"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c19937216e9d3aa9956d9bb8dfc0b0c8beb6058fc4f7a4dc4d850edf86a237d6"
+checksum = "d750af042f7ef4f724306de029d18836c26c1765a54a6a3f094cbd23a7267ffa"
 
 [[package]]
 name = "libloading"
@@ -2376,9 +2376,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.94"
+version = "1.0.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a31971752e70b8b2686d7e46ec17fb38dad4051d94024c88df49b667caea9c84"
+checksum = "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778"
 dependencies = [
  "unicode-ident",
 ]
