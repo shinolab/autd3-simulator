@@ -92,7 +92,8 @@ impl Simulator {
         tracing::info!("Initializing window...");
         let viewport_builder = egui::ViewportBuilder::default()
             .with_inner_size([self.state.window_size.0 as _, self.state.window_size.1 as _])
-            .with_visible(false);
+            .with_visible(false)
+            .with_title("AUTD3 Simulator");
         let window = egui_winit::create_window(egui_ctx, event_loop, &viewport_builder)?;
         Ok(window)
     }
