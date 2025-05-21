@@ -22,6 +22,7 @@ pub struct Server {
 }
 
 impl Server {
+    #[allow(clippy::result_large_err)]
     pub fn new(
         runtime: &Runtime,
         port: u16,
