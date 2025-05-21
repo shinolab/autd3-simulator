@@ -30,7 +30,7 @@ use crate::emulator::EmulatorWrapper;
 use crate::event::{EventResult, UserEvent};
 use crate::state::Tab;
 use crate::update_flag::UpdateFlag;
-use crate::{Vector3, ZPARITY, error::SimulatorError};
+use crate::{Vector3, ZPARITY, error::Result};
 
 const MIN_COL_WIDTH: f32 = 120.;
 const SPACING: [f32; 2] = [2.0, 4.0];
@@ -155,6 +155,7 @@ impl EguiRenderer {
     }
 
     #[allow(clippy::too_many_arguments)]
+    #[allow(clippy::result_large_err)]
     pub fn run_ui_and_paint(
         &mut self,
         device: &Device,
@@ -167,7 +168,7 @@ impl EguiRenderer {
         state: &mut crate::State,
         emulator: &mut EmulatorWrapper,
         update_flag: &mut UpdateFlag,
-    ) -> Result<EventResult, SimulatorError> {
+    ) -> Result<EventResult> {
         let raw_input = {
             egui_winit::update_viewport_info(
                 &mut self.info,
