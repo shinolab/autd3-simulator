@@ -34,7 +34,6 @@ pub struct Simulator {
 }
 
 impl Simulator {
-    #[allow(clippy::result_large_err)]
     pub fn run(event_loop: winit::event_loop::EventLoop<UserEvent>, state: State) -> Result<State> {
         let runtime = Builder::new_multi_thread().enable_all().build()?;
 
@@ -78,7 +77,6 @@ impl Simulator {
         Ok(app.state)
     }
 
-    #[allow(clippy::result_large_err)]
     fn initialize(&mut self, event_loop: &ActiveEventLoop) -> Result<()> {
         let egui_ctx = Renderer::create_egui_context();
         let window = self.create_window(&egui_ctx, event_loop)?;
@@ -86,7 +84,6 @@ impl Simulator {
         Ok(())
     }
 
-    #[allow(clippy::result_large_err)]
     fn create_window(
         &self,
         egui_ctx: &egui::Context,
@@ -101,7 +98,6 @@ impl Simulator {
         Ok(window)
     }
 
-    #[allow(clippy::result_large_err)]
     fn init_run_state(&mut self, egui_ctx: egui::Context, window: Window) -> Result<()> {
         let window = Arc::new(window);
 
@@ -161,7 +157,6 @@ impl Simulator {
         }
     }
 
-    #[allow(clippy::result_large_err)]
     fn run_ui_and_paint(&mut self, window: &Window) -> Result<EventResult> {
         let Self {
             renderer,
@@ -231,7 +226,6 @@ impl Simulator {
         }
     }
 
-    #[allow(clippy::result_large_err)]
     fn on_resumed(&mut self, event_loop: &ActiveEventLoop) -> Result<EventResult> {
         if self.window.is_none() {
             self.initialize(event_loop)?;
@@ -239,7 +233,6 @@ impl Simulator {
         Ok(EventResult::RepaintNow)
     }
 
-    #[allow(clippy::result_large_err)]
     fn on_window_event(&mut self, event: winit::event::WindowEvent) -> Result<EventResult> {
         self.update(None);
         if let Some(window) = self.window.as_ref().cloned() {
@@ -258,7 +251,6 @@ impl Simulator {
         }
     }
 
-    #[allow(clippy::result_large_err)]
     fn on_user_event(&mut self, event: UserEvent) -> Result<EventResult> {
         self.update(Some(&event));
         if let Some(renderer) = &mut self.renderer {
@@ -267,7 +259,6 @@ impl Simulator {
         Ok(EventResult::Wait)
     }
 
-    #[allow(clippy::result_large_err)]
     fn on_device_event(&mut self, event: winit::event::DeviceEvent) -> Result<EventResult> {
         self.update(None);
         if let Some(renderer) = &mut self.renderer {

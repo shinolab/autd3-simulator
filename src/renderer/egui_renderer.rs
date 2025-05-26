@@ -155,7 +155,6 @@ impl EguiRenderer {
     }
 
     #[allow(clippy::too_many_arguments)]
-    #[allow(clippy::result_large_err)]
     pub fn run_ui_and_paint(
         &mut self,
         device: &Device,

@@ -122,7 +122,6 @@ impl Renderer {
         self.slice_renderer.initialize(&self.device, emulator);
     }
 
-    #[allow(clippy::result_large_err)]
     pub fn run_ui_and_paint(
         &mut self,
         state: &mut State,
