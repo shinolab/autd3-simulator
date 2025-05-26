@@ -17,7 +17,7 @@ pub struct SimulatorServer {
 
 #[tonic::async_trait]
 impl simulator_server::Simulator for SimulatorServer {
-    async fn config_geomety(
+    async fn config_geometry(
         &self,
         req: Request<Geometry>,
     ) -> Result<Response<GeometryResponse>, Status> {
@@ -32,7 +32,7 @@ impl simulator_server::Simulator for SimulatorServer {
         Ok(Response::new(GeometryResponse {}))
     }
 
-    async fn update_geomety(
+    async fn update_geometry(
         &self,
         req: Request<Geometry>,
     ) -> Result<Response<GeometryResponse>, Status> {

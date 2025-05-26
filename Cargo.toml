@@ -1,6 +1,6 @@
 [package]
 name = "autd3-simulator"
-version = "32.1.1"
+version = "33.0.0"
 edition = "2024"
 authors = ["shun suzuki <suzuki@hapis.k.u-tokyo.ac.jp>"]
 
@@ -9,40 +9,40 @@ description = "AUTD Simulator"
 repository = "https://github.com/shinolab/autd3-simulator"
 keywords = ["autd"]
 
-[dependencies]
-anyhow = { version = "1.0.98" }
-autd3-core = { version = "32.1.1", default-features = false }
-autd3-driver = { version = "32.1.1", default-features = false }
-autd3-firmware-emulator = { version = "32.1.1", default-features = false }
-autd3-link-simulator = { version = "32.1.1", default-features = false, features = ["async-trait"] }
-autd3-protobuf = { version = "32.1.1", default-features = false, features = ["async-trait", "lightweight"] }
-camera_controllers = { version = "0.35.2", default-features = false }
-egui = { version = "0.31.1", default-features = false, features = ["default_fonts", "serde"] }
-egui-winit = { version = "0.31.1", default-features = false, features = ["wayland"] }
-image = { version = "0.25.6", default-features = false, features = ["png"] }
-futures-util = { version = "0.3.31", default-features = false }
-thiserror = { version = "2.0.12" }
-tokio = { version = "1.45.0", default-features = false, features = ["rt-multi-thread", "macros"] }
-tonic = { version = "0.13.1", default-features = false, features = ["router"] }
-tracing = { version = "0.1.41", default-features = false }
-tracing-subscriber = { version = "0.3.19", default-features = false, features = ["env-filter", "fmt"] }
-winit = { version = "0.30.10", default-features = false, features = ["rwh_06", "wayland"] }
-wgpu = { version = "24.0.1", default-features = false, features = ["dx12", "metal"] }
-glam = { version = "0.30.3", default-features = false, features = ["std", "bytemuck", "serde"] }
-serde = { version = "1.0.219", default-features = false, features = ["derive"] }
-scarlet = { version = "1.2.0", default-features = false }
-strum = { version = "0.27.1", default-features = false, features = ["derive"] }
-parking_lot = { version = "0.12.3", default-features = false }
-bytemuck = { version = "1.23.0", default-features = false, features = ["derive"] }
-egui-wgpu = { version = "0.31.1", default-features = false, features = ["wayland", "winit"] }
-serde_json = { version = "1.0.140", default-features = false, features = ["std"] }
-bitflags = { version = "2.9.1", default-features = false }
-egui_plot = { version = "0.32.1", default-features = false }
-clap = { version = "4.5.38", default-features = false, features = ["derive", "std", "usage", "wrap_help"] }
-
 [features]
 default = []
 use_meter = ["autd3-core/use_meter"]
 left_handed = ["autd3-core/left_handed"]
 enable_debug = []
 unity = ["use_meter", "left_handed"]
+
+[dependencies]
+anyhow = { version = "1.0.98" }
+autd3-core = { version = "33.0.0", default-features = false }
+autd3-driver = { version = "33.0.0", default-features = false }
+autd3-firmware-emulator = { version = "33.0.0", default-features = false }
+autd3-link-simulator = { version = "33.0.0", default-features = false, features = ["async-trait"] }
+autd3-protobuf = { version = "33.0.0", default-features = false, features = ["async-trait", "lightweight"] }
+bitflags = { version = "2.9.1", default-features = false }
+bytemuck = { version = "1.23.0", default-features = false, features = ["derive"] }
+camera_controllers = { version = "0.35.2", default-features = false }
+clap = { version = "4.5.38", default-features = false, features = ["derive", "std", "usage", "wrap_help"] }
+egui = { version = "0.31.1", default-features = false, features = ["default_fonts", "serde"] }
+egui-wgpu = { version = "0.31.1", default-features = false, features = ["wayland", "winit"] }
+egui-winit = { version = "0.31.1", default-features = false, features = ["wayland"] }
+egui_plot = { version = "0.32.1", default-features = false }
+futures-util = { version = "0.3.31", default-features = false }
+glam = { version = "0.30.3", default-features = false, features = ["std", "bytemuck", "serde"] }
+image = { version = "0.25.6", default-features = false, features = ["png"] }
+parking_lot = { version = "0.12.3", default-features = false }
+scarlet = { version = "1.2.0", default-features = false }
+serde = { version = "1.0.219", default-features = false, features = ["derive"] }
+serde_json = { version = "1.0.140", default-features = false, features = ["std"] }
+strum = { version = "0.27.1", default-features = false, features = ["derive"] }
+thiserror = { version = "2.0.12" }
+tokio = { version = "1.45.1", default-features = false, features = ["rt-multi-thread", "macros"] }
+tonic = { version = "0.13.1", default-features = false, features = ["router"] }
+tracing = { version = "0.1.41", default-features = false }
+tracing-subscriber = { version = "0.3.19", default-features = false, features = ["env-filter", "fmt"] }
+wgpu = { version = "24.0.1", default-features = false, features = ["dx12", "metal"] }
+winit = { version = "0.30.10", default-features = false, features = ["rwh_06", "wayland"] }

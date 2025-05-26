@@ -1,5 +1,5 @@
 use autd3_driver::{
-    defined::mm,
+    common::mm,
     ethercat::{DcSysTime, ECAT_DC_SYS_TIME_BASE},
 };
 

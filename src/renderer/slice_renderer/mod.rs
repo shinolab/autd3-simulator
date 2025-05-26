@@ -1,4 +1,4 @@
-use autd3_driver::defined::mm;
+use autd3_driver::common::mm;
 use bytemuck::{NoUninit, Pod, Zeroable};
 use egui_wgpu::wgpu;
 use std::{borrow::Cow, mem};
