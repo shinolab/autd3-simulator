@@ -3,7 +3,7 @@ mod transducers;
 use std::{f32::consts::PI, sync::Arc};
 
 use autd3_driver::{
-    defined::ULTRASOUND_PERIOD_COUNT,
+    common::ULTRASOUND_PERIOD_COUNT,
     ethercat::DcSysTime,
     firmware::cpu::{RxMessage, TxMessage},
     geometry::Geometry,

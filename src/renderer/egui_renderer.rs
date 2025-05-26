@@ -3,7 +3,7 @@ use std::time::Instant;
 
 use autd3_core::datagram::Segment;
 use autd3_driver::{
-    defined::{METER, ULTRASOUND_FREQ, ULTRASOUND_PERIOD, ULTRASOUND_PERIOD_COUNT, mm},
+    common::{METER, ULTRASOUND_FREQ, ULTRASOUND_PERIOD, ULTRASOUND_PERIOD_COUNT, mm},
     ethercat::DcSysTime,
 };
 use egui::{
@@ -880,14 +880,14 @@ impl EguiRenderer {
                     let mod_size = m.len();
                     ui.label(format!("Size: {}", mod_size));
                     ui.label(format!(
-                        "Frequency division: {}",
-                        cpu.fpga().modulation_freq_division(segment)
+                        "Frequency divide: {}",
+                        cpu.fpga().modulation_freq_divide(segment)
                     ));
                     let sampling_freq = ULTRASOUND_FREQ.hz() as f32
-                        / cpu.fpga().modulation_freq_division(segment) as f32;
+                        / cpu.fpga().modulation_freq_divide(segment) as f32;
                     ui.label(format!("Sampling Frequency: {:.3}Hz", sampling_freq));
                     let sampling_period =
-                        ULTRASOUND_PERIOD * cpu.fpga().modulation_freq_division(segment) as u32;
+                        ULTRASOUND_PERIOD * cpu.fpga().modulation_freq_divide(segment) as u32;
                     ui.label(format!("Sampling period: {:?}", sampling_period));
                     let period = sampling_period * mod_size as u32;
                     ui.label(format!("Period: {:?}", period));
@@ -970,14 +970,14 @@ impl EguiRenderer {
                         let stm_size = cpu.fpga().stm_cycle(segment);
                         ui.label(format!("Size: {}", stm_size));
                         ui.label(format!(
-                            "Frequency division: {}",
-                            cpu.fpga().stm_freq_division(segment)
+                            "Frequency divide: {}",
+                            cpu.fpga().stm_freq_divide(segment)
                         ));
                         let sampling_freq = ULTRASOUND_FREQ.hz() as f32
-                            / cpu.fpga().stm_freq_division(segment) as f32;
+                            / cpu.fpga().stm_freq_divide(segment) as f32;
                         ui.label(format!("Sampling Frequency: {:.3}Hz", sampling_freq));
                         let sampling_period =
-                            ULTRASOUND_PERIOD * cpu.fpga().stm_freq_division(segment) as u32;
+                            ULTRASOUND_PERIOD * cpu.fpga().stm_freq_divide(segment) as u32;
                         ui.label(format!("Sampling period: {:?}", sampling_period));
                         let period = sampling_period * stm_size as u32;
                         ui.label(format!("Period: {:?}", period));

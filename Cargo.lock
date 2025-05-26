@@ -166,9 +166,9 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "autd3"
-version = "32.1.1"
+version = "33.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6feb8fdc10ccefef1f96abf09ae684593de37e0770c60891ec0cd1890c7a3c8c"
+checksum = "b17089f051ec0a5eb3c20ca6e8fbd9f4a9e269cf4ce7eddf46ac68179cd06c05"
 dependencies = [
  "autd3-core",
  "autd3-derive",
@@ -189,9 +189,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-core"
-version = "32.1.1"
+version = "33.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b36fb64e93260305f306631b04d2dcc44e745866e0d2eca53d048226bfe18b69"
+checksum = "e47f5b7d6bf912bbdb0b913d7e6347054e8127a99a4ed5fe7b1fb4f74b11e6cc"
 dependencies = [
  "async-trait",
  "autd3-derive",
@@ -204,15 +204,16 @@ dependencies = [
  "thiserror 2.0.12",
  "time",
  "tracing",
+ "tynm",
  "windows 0.61.1",
  "zerocopy",
 ]
 
 [[package]]
 name = "autd3-derive"
-version = "32.1.1"
+version = "33.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a90f237e3c885492b4ef88cdbde529b25bc371e5304a649cc6e7e40e2b004423"
+checksum = "300bcfedf985582fa034c465a978ea99714e571728c840e76dca43ae7c5df313"
 dependencies = [
  "quote",
  "syn",
@@ -220,9 +221,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-driver"
-version = "32.1.1"
+version = "33.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b08e7e7850a54019135a27961ecad35f19e369094d443548e001bd8c2feffc7d"
+checksum = "45e66ae704bd2c04ddd813329550d6b3d75460635b53633c539e1a39cf83a54d"
 dependencies = [
  "autd3-core",
  "autd3-derive",
@@ -238,14 +239,15 @@ dependencies = [
  "thiserror 2.0.12",
  "time",
  "tracing",
+ "tynm",
  "zerocopy",
 ]
 
 [[package]]
 name = "autd3-firmware-emulator"
-version = "32.1.1"
+version = "33.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a93bff25f5e507539691f79a49795f95ecd0f2315f7380a565aef5aa309203bf"
+checksum = "87eaba297382c5dbf7de1a8889f33df8d07cc2b91e71dba7dac537aada301016"
 dependencies = [
  "autd3-driver",
  "bitfield-struct",
@@ -256,9 +258,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-gain-holo"
-version = "32.1.1"
+version = "33.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "468a5e30b3b7b96bc6f396ca60db57fa113a3e87e225b61a73f335c789e7cba8"
+checksum = "fa0d071db78233772c1059addfa9eefa9eebad69d8dfb14644510a8058f7e6b9"
 dependencies = [
  "autd3-core",
  "derive_more",
@@ -272,21 +274,22 @@ dependencies = [
 
 [[package]]
 name = "autd3-link-simulator"
-version = "32.1.1"
+version = "33.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f830e94ac88472862d6520823a08a24c6100b12bffc0eabf32101eeaa9e9dc3e"
+checksum = "ad1528fc4190eb36358898b2b326e818ec964d861f5ff184c37b1f12e6085c3f"
 dependencies = [
  "autd3-core",
  "autd3-protobuf",
  "tonic",
  "tracing",
+ "zerocopy",
 ]
 
 [[package]]
 name = "autd3-protobuf"
-version = "32.1.1"
+version = "33.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c848e610076cb7c15cb1758ae8a950f8dc9b4804e104d595112dafc4cf006312"
+checksum = "52bb40e94016368b0b1d423e8f14c4c8e959b75929b3c459eb7a1d6f5f7a9dc9"
 dependencies = [
  "autd3",
  "autd3-core",
@@ -302,7 +305,7 @@ dependencies = [
 
 [[package]]
 name = "autd3-simulator"
-version = "32.1.1"
+version = "33.0.0"
 dependencies = [
  "anyhow",
  "autd3-core",
@@ -424,9 +427,9 @@ checksum = "5e764a1d40d510daf35e07be9eb06e75770908c27d411ee6c92109c9840eaaf7"
 
 [[package]]
 name = "bitfield-struct"
-version = "0.10.1"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2be5a46ba01b60005ae2c51a36a29cfe134bcacae2dd5cedcd4615fbaad1494b"
+checksum = "d3ca019570363e800b05ad4fd890734f28ac7b72f563ad8a35079efb793616f8"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -561,9 +564,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.23"
+version = "1.2.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f4ac86a9e5bc1e2b3449ab9d7d3a6a405e3d1bb28d7b9be8614f55846ae3766"
+checksum = "16595d3be041c03b09d08d0858631facccee9221e579704070e6e9e4915d3bc7"
 dependencies = [
  "jobserver",
  "libc",
@@ -759,9 +762,9 @@ dependencies = [
 
 [[package]]
 name = "cursor-icon"
-version = "1.1.0"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96a6ac251f4a2aca6b3f91340350eab87ae57c3f127ffeb585e92bd336717991"
+checksum = "f27ae1dd37df86211c42e150270f82743308803d90a6f6e6651cd730d5e1732f"
 
 [[package]]
 name = "deranged"
@@ -1236,9 +1239,9 @@ dependencies = [
 
 [[package]]
 name = "gpu-descriptor"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcf29e94d6d243368b7a56caa16bc213e4f9f8ed38c4d9557069527b5d5281ca"
+checksum = "b89c83349105e3732062a895becfc71a8f921bb71ecbbdd8ff99263e3b53a0ca"
 dependencies = [
  "bitflags 2.9.1",
  "gpu-descriptor-types",
@@ -1312,9 +1315,9 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 
 [[package]]
 name = "hermit-abi"
-version = "0.4.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbf6a919d6cf397374f7dfeeea91d974c7c0a7221d0d0f4f20d859d329e53fcc"
+checksum = "f154ce46856750ed433c8649605bf7ed2de3bc35fd9d2a9f30cddd873c80cb08"
 
 [[package]]
 name = "hexf-parse"
@@ -1688,13 +1691,13 @@ dependencies = [
 
 [[package]]
 name = "mio"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2886843bf800fba2e3377cff24abf6379b4c4d5c6681eaf9ea5b0d15090450bd"
+checksum = "78bed444cc8a2160f01cbcf811ef18cac863ad68ae8ca62092e8db51d51c761c"
 dependencies = [
  "libc",
  "wasi 0.11.0+wasi-snapshot-preview1",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -1711,7 +1714,7 @@ dependencies = [
  "hexf-parse",
  "indexmap",
  "log",
- "rustc-hash",
+ "rustc-hash 1.1.0",
  "spirv",
  "strum 0.26.3",
  "termcolor",
@@ -2298,15 +2301,15 @@ dependencies = [
 
 [[package]]
 name = "polling"
-version = "3.7.4"
+version = "3.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a604568c3202727d1507653cb121dbd627a58684eb09a820fd746bee38b4442f"
+checksum = "b53a684391ad002dd6a596ceb6c74fd004fdce75f4be2e3f615068abbea5fd50"
 dependencies = [
  "cfg-if",
  "concurrent-queue",
  "hermit-abi",
  "pin-project-lite",
- "rustix 0.38.44",
+ "rustix 1.0.7",
  "tracing",
  "windows-sys 0.59.0",
 ]
@@ -2599,6 +2602,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "08d43f7aa6b08d49f382cde6a7982047c3426db949b1424bc4b7ec9ae12c6ce2"
 
 [[package]]
+name = "rustc-hash"
+version = "2.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "357703d41365b4b27c590e3ed91eabb1b663f07c4c084095e60cbed4362dff0d"
+
+[[package]]
 name = "rustc_version"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2635,9 +2644,9 @@ dependencies = [
 
 [[package]]
 name = "rustversion"
-version = "1.0.20"
+version = "1.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eded382c5f5f786b989652c49544c4877d9f015cc22e145a5ea8ea66c2921cd2"
+checksum = "8a0d197bd2c9dc6e53b84da9556a69ba4cdfab8619eb41a8bd1cc2027a0f6b1d"
 
 [[package]]
 name = "ryu"
@@ -3053,9 +3062,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.45.0"
+version = "1.45.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2513ca694ef9ede0fb23fe71a4ee4107cb102b9dc1930f6d0fd77aae068ae165"
+checksum = "75ef51a33ef1da925cea3e4eb122833cb377c61439ca401b770f54902b806779"
 dependencies = [
  "backtrace",
  "bytes",
@@ -3248,11 +3257,11 @@ dependencies = [
 
 [[package]]
 name = "type-map"
-version = "0.5.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "deb68604048ff8fa93347f02441e4487594adc20bb8a084f9e564d2b827a0a9f"
+checksum = "cb30dbbd9036155e74adad6812e9898d03ec374946234fbcebd5dfc7b9187b90"
 dependencies = [
- "rustc-hash",
+ "rustc-hash 2.1.1",
 ]
 
 [[package]]
@@ -3535,9 +3544,9 @@ dependencies = [
 
 [[package]]
 name = "wgpu"
-version = "24.0.3"
+version = "24.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "35904fb00ba2d2e0a4d002fcbbb6e1b89b574d272a50e5fc95f6e81cf281c245"
+checksum = "6b0b3436f0729f6cdf2e6e9201f3d39dc95813fad61d826c1ed07918b4539353"
 dependencies = [
  "arrayvec",
  "bitflags 2.9.1",
@@ -3560,9 +3569,9 @@ dependencies = [
 
 [[package]]
 name = "wgpu-core"
-version = "24.0.2"
+version = "24.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "671c25545d479b47d3f0a8e373aceb2060b67c6eb841b24ac8c32348151c7a0c"
+checksum = "7f0aa306497a238d169b9dc70659105b4a096859a34894544ca81719242e1499"
 dependencies = [
  "arrayvec",
  "bit-vec",
@@ -3576,7 +3585,7 @@ dependencies = [
  "parking_lot",
  "profiling",
  "raw-window-handle",
- "rustc-hash",
+ "rustc-hash 1.1.0",
  "smallvec",
  "thiserror 2.0.12",
  "wgpu-hal",
@@ -3619,7 +3628,7 @@ dependencies = [
  "range-alloc",
  "raw-window-handle",
  "renderdoc-sys",
- "rustc-hash",
+ "rustc-hash 1.1.0",
  "smallvec",
  "thiserror 2.0.12",
  "wasm-bindgen",
