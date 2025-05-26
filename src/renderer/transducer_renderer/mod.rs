@@ -54,7 +54,6 @@ fn create_vertices() -> (Vec<Vertex>, Vec<u16>) {
 }
 
 #[allow(clippy::type_complexity)]
-#[allow(clippy::result_large_err)]
 fn create_texels() -> Result<((u32, u32), ImageBuffer<Rgba<u8>, Vec<u8>>)> {
     let diffuse_bytes = include_bytes!("circle.png");
     let diffuse_image = image::load_from_memory(diffuse_bytes)?;
@@ -72,7 +71,6 @@ fn coloring_hsv(h: f32, v: f32, a: f32) -> [f32; 4] {
 }
 
 impl TransducerRenderer {
-    #[allow(clippy::result_large_err)]
     pub fn new(
         device: &Device,
         queue: &Queue,
