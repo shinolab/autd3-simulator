@@ -78,7 +78,7 @@ atomic-waker 1.1.2 (Apache-2.0 OR MIT)
 https://github.com/smol-rs/atomic-waker
 ---------------------------------------------------------
 
-autd3 34.0.0-rc.1 (MIT)
+autd3 34.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
@@ -90,7 +90,7 @@ autd3-core 33.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-core 34.0.0-rc.1 (MIT)
+autd3-core 34.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
@@ -102,7 +102,7 @@ autd3-derive 33.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-derive 34.0.0-rc.1 (MIT)
+autd3-derive 34.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
@@ -114,7 +114,7 @@ autd3-driver 33.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-driver 34.0.0-rc.1 (MIT)
+autd3-driver 34.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
@@ -126,19 +126,19 @@ autd3-firmware-emulator 33.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-firmware-emulator 34.0.0-rc.1 (MIT)
+autd3-firmware-emulator 34.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-link-simulator 34.0.0-rc.1 (MIT)
+autd3-link-simulator 34.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-protobuf 34.0.0-rc.1 (MIT)
+autd3-protobuf 34.0.0 (MIT)
 https://github.com/shinolab/autd3-rs
 ---------------------------------------------------------
 
-autd3-simulator 34.0.0-rc.1 (MIT)
+autd3-simulator 34.0.0 (MIT)
 https://github.com/shinolab/autd3-simulator
 ---------------------------------------------------------
 
