@@ -11,7 +11,7 @@ use winit::event_loop::EventLoopProxy;
 use crate::event::{Signal, UserEvent};
 
 pub struct SimulatorServer {
-    pub rx_buf: Arc<RwLock<Vec<autd3_driver::firmware::cpu::RxMessage>>>,
+    pub rx_buf: Arc<RwLock<Vec<autd3_core::link::RxMessage>>>,
     pub proxy: EventLoopProxy<UserEvent>,
 }
 
@@ -48,7 +48,7 @@ impl simulator_server::Simulator for SimulatorServer {
     }
 
     async fn send_data(&self, req: Request<TxRawData>) -> Result<Response<SendResponse>, Status> {
-        let tx = Vec::<autd3_driver::firmware::cpu::TxMessage>::from_msg(req.into_inner())?;
+        let tx = Vec::<autd3_core::link::TxMessage>::from_msg(req.into_inner())?;
         if self
             .proxy
             .send_event(UserEvent::Server(Signal::Send(tx)))
@@ -62,7 +62,10 @@ impl simulator_server::Simulator for SimulatorServer {
     async fn read_data(&self, _: Request<ReadRequest>) -> Result<Response<RxMessage>, Status> {
         let rx = self.rx_buf.read();
         Ok(Response::new(RxMessage {
-            data: rx.iter().flat_map(|c| [c.data(), c.ack()]).collect(),
+            data: rx
+                .iter()
+                .flat_map(|c| [c.data(), c.ack().into_bits()])
+                .collect(),
         }))
     }
 

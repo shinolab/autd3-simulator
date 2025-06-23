@@ -2,14 +2,12 @@ mod transducers;
 
 use std::{f32::consts::PI, sync::Arc};
 
-use autd3_driver::{
-    common::ULTRASOUND_PERIOD_COUNT,
-    ethercat::DcSysTime,
-    firmware::cpu::{RxMessage, TxMessage},
-    geometry::Geometry,
-};
+use autd3_core::link::{RxMessage, TxMessage};
+use autd3_driver::{ethercat::DcSysTime, geometry::Geometry};
 use autd3_firmware_emulator::CPUEmulator;
 use parking_lot::RwLock;
+
+use crate::ULTRASOUND_PERIOD_COUNT;
 
 pub struct Emulator<'a> {
     pub cpu: &'a mut CPUEmulator,

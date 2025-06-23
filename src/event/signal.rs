@@ -1,4 +1,5 @@
-use autd3_driver::{firmware::cpu::TxMessage, geometry::Geometry};
+use autd3_core::link::TxMessage;
+use autd3_driver::geometry::Geometry;
 
 pub enum Signal {
     ConfigGeometry(Geometry),

@@ -71,7 +71,6 @@ pub struct State {
     pub real_time: u64,
     pub time_scale: f32,
     pub port: u16,
-    pub lightweight: bool,
     pub vsync: bool,
     pub settings_dir: String,
     pub time_step: i32,
@@ -106,7 +105,6 @@ impl std::default::Default for State {
             real_time: DcSysTime::now().sys_time(),
             time_scale: 1.0,
             port: 8080,
-            lightweight: false,
             vsync: true,
             settings_dir: String::new(),
             time_step: 1000000,
@@ -142,7 +140,6 @@ impl State {
         self.auto_play = state.auto_play;
         self.time_scale = state.time_scale;
         self.port = state.port;
-        self.lightweight = state.lightweight;
         self.vsync = state.vsync;
         self.settings_dir = state.settings_dir;
         self.debug = state.debug;

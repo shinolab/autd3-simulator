@@ -8,8 +8,7 @@ use winit::event_loop::EventLoopProxy;
 
 use std::sync::Arc;
 
-use autd3_driver::firmware::cpu::RxMessage;
-use autd3_protobuf::{ecat_light_server::EcatLightServer, lightweight::LightweightServer};
+use autd3_core::link::RxMessage;
 use futures_util::FutureExt;
 use std::net::ToSocketAddrs;
 use tokio::sync::oneshot;
@@ -25,7 +24,6 @@ impl Server {
     pub fn new(
         runtime: &Runtime,
         port: u16,
-        lightweight: bool,
         rx_buf: Arc<RwLock<Vec<RxMessage>>>,
         proxy: EventLoopProxy<UserEvent>,
     ) -> Result<Self> {
@@ -33,22 +31,10 @@ impl Server {
 
         let server_th = runtime.spawn({
             async move {
-                let builder = tonic::transport::Server::builder().add_service(
-                    autd3_protobuf::simulator_server::SimulatorServer::new(grpc::SimulatorServer {
-                        rx_buf,
-                        proxy,
-                    }),
-                );
-                let builder = if lightweight {
-                    builder.add_service(EcatLightServer::new(LightweightServer::new(move || {
-                        Ok(autd3_link_simulator::Simulator::new(
-                            format!("127.0.0.1:{}", port).parse().unwrap(),
-                        ))
-                    })))
-                } else {
-                    builder
-                };
-                builder
+                tonic::transport::Server::builder()
+                    .add_service(autd3_protobuf::simulator_server::SimulatorServer::new(
+                        grpc::SimulatorServer { rx_buf, proxy },
+                    ))
                     .serve_with_shutdown(
                         format!("0.0.0.0:{port}")
                             .to_socket_addrs()
