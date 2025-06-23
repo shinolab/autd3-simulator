@@ -41,7 +41,6 @@ impl Simulator {
         let server = Server::new(
             &runtime,
             state.port,
-            state.lightweight,
             rx_buf.clone(),
             event_loop.create_proxy(),
         )?;

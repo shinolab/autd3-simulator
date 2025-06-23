@@ -3,7 +3,7 @@ use std::time::Instant;
 
 use autd3_core::datagram::Segment;
 use autd3_driver::{
-    common::{METER, ULTRASOUND_FREQ, ULTRASOUND_PERIOD, ULTRASOUND_PERIOD_COUNT, mm},
+    common::{METER, ULTRASOUND_FREQ, ULTRASOUND_PERIOD, mm},
     ethercat::DcSysTime,
 };
 use egui::{
@@ -25,11 +25,11 @@ use strum::IntoEnumIterator;
 use wgpu::{Device, Queue, SurfaceConfiguration};
 use winit::{event_loop::EventLoopProxy, window::Window};
 
-use crate::common::color_map::ColorMap;
 use crate::emulator::EmulatorWrapper;
 use crate::event::{EventResult, UserEvent};
 use crate::state::Tab;
 use crate::update_flag::UpdateFlag;
+use crate::{ULTRASOUND_PERIOD_COUNT, common::color_map::ColorMap};
 use crate::{Vector3, ZPARITY, error::Result};
 
 const MIN_COL_WIDTH: f32 = 120.;
@@ -986,18 +986,19 @@ impl EguiRenderer {
                 });
 
                 ui.collapsing("GPIO", |ui| {
-                    let debug_types = cpu.fpga().debug_types();
-                    let debug_values = cpu.fpga().debug_values();
+                    use autd3_firmware_emulator::fpga::params::*;
+                    let gpio_out_types = cpu.fpga().gpio_out_types();
+                    let gpio_out_values = cpu.fpga().gpio_out_values();
                     let gpio_out = |ty, value| match ty {
-                        autd3_firmware_emulator::fpga::params::DBG_NONE => {
+                        GPIO_O_TYPE_NONE | GPIO_O_TYPE_SYNC_DIFF => {
                             vec![0.0; ULTRASOUND_PERIOD_COUNT]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_BASE_SIG => [
+                        GPIO_O_TYPE_BASE_SIG => [
                             vec![0.0; ULTRASOUND_PERIOD_COUNT / 2],
                             vec![1.0; ULTRASOUND_PERIOD_COUNT / 2],
                         ]
                         .concat(),
-                        autd3_firmware_emulator::fpga::params::DBG_THERMO => {
+                        GPIO_O_TYPE_THERMO => {
                             vec![
                                 if cpu.fpga().is_thermo_asserted() {
                                     1.0
@@ -1007,16 +1008,16 @@ impl EguiRenderer {
                                 ULTRASOUND_PERIOD_COUNT
                             ]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_FORCE_FAN => {
+                        GPIO_O_TYPE_FORCE_FAN => {
                             vec![
                                 if cpu.fpga().is_force_fan() { 1.0 } else { 0.0 };
                                 ULTRASOUND_PERIOD_COUNT
                             ]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_SYNC => {
+                        GPIO_O_TYPE_SYNC => {
                             vec![0.0; ULTRASOUND_PERIOD_COUNT]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_MOD_SEGMENT => {
+                        GPIO_O_TYPE_MOD_SEGMENT => {
                             vec![
                                 match cpu.fpga().current_mod_segment() {
                                     Segment::S0 => 0.0,
@@ -1025,7 +1026,7 @@ impl EguiRenderer {
                                 ULTRASOUND_PERIOD_COUNT
                             ]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_MOD_IDX => {
+                        GPIO_O_TYPE_MOD_IDX => {
                             vec![
                                 if cpu.fpga().current_mod_idx() == 0 {
                                     1.0
@@ -1035,7 +1036,7 @@ impl EguiRenderer {
                                 ULTRASOUND_PERIOD_COUNT
                             ]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_STM_SEGMENT => {
+                        GPIO_O_TYPE_STM_SEGMENT => {
                             vec![
                                 match cpu.fpga().current_stm_segment() {
                                     Segment::S0 => 0.0,
@@ -1044,7 +1045,7 @@ impl EguiRenderer {
                                 ULTRASOUND_PERIOD_COUNT
                             ]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_STM_IDX => {
+                        GPIO_O_TYPE_STM_IDX => {
                             vec![
                                 if cpu.fpga().current_mod_idx() == 0 {
                                     1.0
@@ -1054,7 +1055,7 @@ impl EguiRenderer {
                                 ULTRASOUND_PERIOD_COUNT
                             ]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_IS_STM_MODE => {
+                        GPIO_O_TYPE_IS_STM_MODE => {
                             vec![
                                 if cpu.fpga().stm_cycle(cpu.fpga().current_stm_segment()) != 1 {
                                     1.0
@@ -1064,7 +1065,7 @@ impl EguiRenderer {
                                 ULTRASOUND_PERIOD_COUNT
                             ]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_PWM_OUT => {
+                        GPIO_O_TYPE_PWM_OUT => {
                             let d = cpu.fpga().drives_at(
                                 cpu.fpga().current_stm_segment(),
                                 cpu.fpga().current_stm_idx(),
@@ -1090,7 +1091,7 @@ impl EguiRenderer {
                                 })
                                 .collect()
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_SYS_TIME_EQ => {
+                        GPIO_O_TYPE_SYS_TIME_EQ => {
                             let now = (((cpu.dc_sys_time().sys_time() / 25000) << 8)
                                 & 0x00FF_FFFF_FFFF_FFFF)
                                 >> 8;
@@ -1098,14 +1099,14 @@ impl EguiRenderer {
                             let v = if now == value { 1.0 } else { 0.0 };
                             vec![v; ULTRASOUND_PERIOD_COUNT]
                         }
-                        autd3_firmware_emulator::fpga::params::DBG_DIRECT => {
+                        GPIO_O_TYPE_DIRECT => {
                             vec![value as f32; ULTRASOUND_PERIOD_COUNT]
                         }
                         _ => unreachable!(),
                     };
 
                     (0..4).for_each(|i| {
-                        let gpio_out = gpio_out(debug_types[i], debug_values[i]);
+                        let gpio_out = gpio_out(gpio_out_types[i], gpio_out_values[i]);
                         egui_plot::Plot::new(format!("gpio_{}", i))
                             .auto_bounds(Vec2b::new(true, false))
                             .y_grid_spacer(|_g| {

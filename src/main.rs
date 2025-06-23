@@ -49,10 +49,6 @@ struct Args {
     #[arg(short = 's', long = "setting_file", default_value = "settings.json")]
     setting_file: String,
 
-    /// lightweight mode (Optional, if set, overrides settings from file)
-    #[arg(long = "lightweight", default_value = "false")]
-    lightweight: Option<bool>,
-
     /// Debug mode
     #[arg(short = 'd', long = "debug", default_value = "false")]
     debug: bool,
@@ -69,7 +65,6 @@ fn main() -> anyhow::Result<()> {
         Path::new(&arg.setting_file).to_owned()
     };
     let vsync = arg.vsync;
-    let lightweight = arg.lightweight;
     let debug = arg.debug;
 
     let filter = if debug {
@@ -120,9 +115,6 @@ fn main() -> anyhow::Result<()> {
     }
     if let Some(path) = &arg.setting_dir {
         state.settings_dir = path.clone();
-    }
-    if let Some(lightweight) = lightweight {
-        state.lightweight = lightweight;
     }
 
     let event_loop = winit::event_loop::EventLoop::with_user_event().build()?;
