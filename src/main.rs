@@ -131,7 +131,7 @@ fn main() -> anyhow::Result<()> {
             .write(true)
             .append(false)
             .open(&settings_path)?;
-        write!(file, "{}", settings_str)?;
+        write!(file, "{settings_str}")?;
     }
 
     Ok(())

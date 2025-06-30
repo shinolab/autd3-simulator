@@ -13,7 +13,7 @@ impl std::fmt::Debug for Signal {
         match self {
             Signal::ConfigGeometry(_) => write!(f, "ConfigGeometry"),
             Signal::UpdateGeometry(_) => write!(f, "UpdateGeometry"),
-            Signal::Send(tx) => write!(f, "Send({:?})", tx),
+            Signal::Send(tx) => write!(f, "Send({tx:?})"),
             Signal::Close => write!(f, "Close"),
         }
     }

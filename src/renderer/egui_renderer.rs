@@ -576,7 +576,7 @@ impl EguiRenderer {
                     .show_ui(ui, |ui| {
                         ColorMap::iter().for_each(|c| {
                             if ui
-                                .selectable_value(&mut state.slice.color_map, c, format!("{:?}", c))
+                                .selectable_value(&mut state.slice.color_map, c, format!("{c:?}"))
                                 .changed()
                             {
                                 update_flag.set(UpdateFlag::UPDATE_SLICE_COLOR_MAP, true);
@@ -793,7 +793,7 @@ impl EguiRenderer {
             .striped(true)
             .show(ui, |ui| {
                 emulator.iter_mut().enumerate().for_each(|(i, emulator)| {
-                    ui.label(format!("Device {}: ", i));
+                    ui.label(format!("Device {i}: "));
                     ui.horizontal(|ui| {
                         if ui.checkbox(emulator.visible, "").changed() {
                             update_flag.set(UpdateFlag::UPDATE_TRANS_ALPHA, true);
@@ -877,19 +877,19 @@ impl EguiRenderer {
                     let m = cpu.fpga().modulation_buffer(segment);
 
                     let mod_size = m.len();
-                    ui.label(format!("Size: {}", mod_size));
+                    ui.label(format!("Size: {mod_size}"));
                     ui.label(format!(
                         "Frequency divide: {}",
                         cpu.fpga().modulation_freq_divide(segment)
                     ));
                     let sampling_freq = ULTRASOUND_FREQ.hz() as f32
                         / cpu.fpga().modulation_freq_divide(segment) as f32;
-                    ui.label(format!("Sampling Frequency: {:.3}Hz", sampling_freq));
+                    ui.label(format!("Sampling Frequency: {sampling_freq:.3}Hz"));
                     let sampling_period =
                         ULTRASOUND_PERIOD * cpu.fpga().modulation_freq_divide(segment) as u32;
-                    ui.label(format!("Sampling period: {:?}", sampling_period));
+                    ui.label(format!("Sampling period: {sampling_period:?}"));
                     let period = sampling_period * mod_size as u32;
-                    ui.label(format!("Period: {:?}", period));
+                    ui.label(format!("Period: {period:?}"));
 
                     ui.label(format!("Current Index: {}", cpu.fpga().current_mod_idx()));
 
@@ -958,7 +958,7 @@ impl EguiRenderer {
                         ));
                     }
 
-                    ui.label(format!("Segment: {:?}", segment));
+                    ui.label(format!("Segment: {segment:?}"));
 
                     if !is_gain_mode {
                         ui.label(format!(
@@ -967,19 +967,19 @@ impl EguiRenderer {
                         ));
 
                         let stm_size = cpu.fpga().stm_cycle(segment);
-                        ui.label(format!("Size: {}", stm_size));
+                        ui.label(format!("Size: {stm_size}"));
                         ui.label(format!(
                             "Frequency divide: {}",
                             cpu.fpga().stm_freq_divide(segment)
                         ));
                         let sampling_freq = ULTRASOUND_FREQ.hz() as f32
                             / cpu.fpga().stm_freq_divide(segment) as f32;
-                        ui.label(format!("Sampling Frequency: {:.3}Hz", sampling_freq));
+                        ui.label(format!("Sampling Frequency: {sampling_freq:.3}Hz"));
                         let sampling_period =
                             ULTRASOUND_PERIOD * cpu.fpga().stm_freq_divide(segment) as u32;
-                        ui.label(format!("Sampling period: {:?}", sampling_period));
+                        ui.label(format!("Sampling period: {sampling_period:?}"));
                         let period = sampling_period * stm_size as u32;
-                        ui.label(format!("Period: {:?}", period));
+                        ui.label(format!("Period: {period:?}"));
 
                         ui.label(format!("Current Index: {}", cpu.fpga().current_stm_idx()));
                     }
@@ -1107,7 +1107,7 @@ impl EguiRenderer {
 
                     (0..4).for_each(|i| {
                         let gpio_out = gpio_out(gpio_out_types[i], gpio_out_values[i]);
-                        egui_plot::Plot::new(format!("gpio_{}", i))
+                        egui_plot::Plot::new(format!("gpio_{i}"))
                             .auto_bounds(Vec2b::new(true, false))
                             .y_grid_spacer(|_g| {
                                 vec![
