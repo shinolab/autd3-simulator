@@ -2,7 +2,10 @@ mod transducers;
 
 use std::{f32::consts::PI, sync::Arc};
 
-use autd3_core::link::{RxMessage, TxMessage};
+use autd3_core::{
+    gain::{Drive, Phase},
+    link::{RxMessage, TxMessage},
+};
 use autd3_driver::{ethercat::DcSysTime, geometry::Geometry};
 use autd3_firmware_emulator::CPUEmulator;
 use parking_lot::RwLock;
@@ -15,6 +18,9 @@ pub struct Emulator<'a> {
     pub visible: &'a mut bool,
     pub enable: &'a mut bool,
     pub thermal: &'a mut bool,
+    pub drive_buffer: &'a mut [Drive],
+    pub phase_buffer: &'a mut [Phase],
+    pub output_mask_buffer: &'a mut [bool],
 }
 
 pub struct EmulatorWrapper {
@@ -24,6 +30,9 @@ pub struct EmulatorWrapper {
     visible: Vec<bool>,
     enable: Vec<bool>,
     thermal: Vec<bool>,
+    drive_buffer: Vec<Vec<Drive>>,
+    phase_buffer: Vec<Vec<Phase>>,
+    output_mask_buffer: Vec<Vec<bool>>,
 }
 
 impl EmulatorWrapper {
@@ -35,6 +44,9 @@ impl EmulatorWrapper {
             visible: Default::default(),
             enable: Default::default(),
             thermal: Default::default(),
+            drive_buffer: Vec::new(),
+            phase_buffer: Vec::new(),
+            output_mask_buffer: Vec::new(),
         }
     }
 
@@ -53,13 +65,25 @@ impl EmulatorWrapper {
             .zip(self.enable.iter_mut())
             .zip(self.thermal.iter_mut())
             .zip(self.transducers.devices())
+            .zip(self.drive_buffer.iter_mut())
+            .zip(self.phase_buffer.iter_mut())
+            .zip(self.output_mask_buffer.iter_mut())
             .map(
-                |((((cpu, visible), enable), thermal), transducers)| Emulator {
+                |(
+                    (
+                        (((((cpu, visible), enable), thermal), transducers), drive_buffer),
+                        phase_buffer,
+                    ),
+                    output_mask_buffer,
+                )| Emulator {
                     cpu,
                     transducers,
                     visible,
                     enable,
                     thermal,
+                    drive_buffer,
+                    phase_buffer,
+                    output_mask_buffer,
                 },
             )
     }
@@ -92,7 +116,13 @@ impl EmulatorWrapper {
             } else {
                 cpu.fpga().current_stm_idx()
             };
-            let drives = cpu.fpga().drives_at(stm_segment, idx);
+            cpu.fpga().drives_at_inplace(
+                stm_segment,
+                idx,
+                emulator.phase_buffer,
+                emulator.output_mask_buffer,
+                emulator.drive_buffer,
+            );
             let mod_segment = cpu.fpga().current_mod_segment();
             let m = if mod_enable {
                 let mod_idx = cpu.fpga().current_mod_idx();
@@ -103,7 +133,7 @@ impl EmulatorWrapper {
             emulator
                 .transducers
                 .iter_mut()
-                .zip(drives.iter())
+                .zip(emulator.drive_buffer)
                 .for_each(|(tr, d)| {
                     tr.amp = (PI * cpu.fpga().to_pulse_width(d.intensity, m).pulse_width() as f32
                         / ULTRASOUND_PERIOD_COUNT as f32)
@@ -123,6 +153,21 @@ impl EmulatorWrapper {
         self.visible = vec![true; self.cpus.len()];
         self.enable = vec![true; self.cpus.len()];
         self.thermal = vec![false; self.cpus.len()];
+        self.drive_buffer = self
+            .cpus
+            .iter()
+            .map(|cpu| vec![Drive::NULL; cpu.num_transducers()])
+            .collect();
+        self.phase_buffer = self
+            .cpus
+            .iter()
+            .map(|cpu| vec![Phase::ZERO; cpu.num_transducers()])
+            .collect();
+        self.output_mask_buffer = self
+            .cpus
+            .iter()
+            .map(|cpu| vec![true; cpu.num_transducers()])
+            .collect();
     }
 
     pub fn update_geometry(&mut self, geometry: &Geometry) {
@@ -148,5 +193,8 @@ impl EmulatorWrapper {
         self.visible.clear();
         self.enable.clear();
         self.thermal.clear();
+        self.drive_buffer.clear();
+        self.phase_buffer.clear();
+        self.output_mask_buffer.clear();
     }
 }
