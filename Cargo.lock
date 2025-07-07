@@ -216,9 +216,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-driver"
-version = "35.0.0"
+version = "35.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca9d2d720198c6fad1b793f4a30c848b5ebabfcbc6d9f864aa1f7d22fa9c4dad"
+checksum = "17af752cda9690d7f0d2367d59603461d6c33246b2612a704015c736d8bf47b2"
 dependencies = [
  "autd3-core",
  "autd3-derive",
