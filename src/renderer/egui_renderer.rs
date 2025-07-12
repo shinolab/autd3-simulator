@@ -1108,7 +1108,7 @@ impl EguiRenderer {
                     (0..4).for_each(|i| {
                         let gpio_out = gpio_out(gpio_out_types[i], gpio_out_values[i]);
                         egui_plot::Plot::new(format!("gpio_{i}"))
-                            .auto_bounds(Vec2b::new(true, false))
+                            .auto_bounds([true, false])
                             .y_grid_spacer(|_g| {
                                 vec![
                                     GridMark {
