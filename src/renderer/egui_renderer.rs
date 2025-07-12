@@ -7,9 +7,9 @@ use autd3_driver::{
     ethercat::DcSysTime,
 };
 use egui::{
-    ClippedPrimitive, DragValue, FullOutput, InputState, PointerButton, Vec2b, ViewportId,
-    ViewportIdMap, ViewportInfo, ViewportOutput, ahash::HashSet,
-    color_picker::color_picker_color32, epaint::textures,
+    ClippedPrimitive, DragValue, FullOutput, InputState, PointerButton, ViewportId, ViewportIdMap,
+    ViewportInfo, ViewportOutput, ahash::HashSet, color_picker::color_picker_color32,
+    epaint::textures,
 };
 use egui_plot::{GridMark, Line, PlotPoints};
 use egui_wgpu::{
@@ -1108,7 +1108,7 @@ impl EguiRenderer {
                     (0..4).for_each(|i| {
                         let gpio_out = gpio_out(gpio_out_types[i], gpio_out_values[i]);
                         egui_plot::Plot::new(format!("gpio_{i}"))
-                            .auto_bounds(Vec2b::new(true, false))
+                            .auto_bounds([true, false])
                             .y_grid_spacer(|_g| {
                                 vec![
                                     GridMark {

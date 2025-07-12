@@ -18,6 +18,7 @@ use depth_texture::DepthTexture;
 use egui::ViewportId;
 use egui_renderer::EguiRenderer;
 use egui_wgpu::ScreenDescriptor;
+use wgpu::Trace;
 use winit::{event::DeviceEvent, event_loop::EventLoopProxy, window::Window};
 
 pub struct Renderer {
@@ -50,19 +51,16 @@ impl Renderer {
                 force_fallback_adapter: false,
                 compatible_surface: Some(&surface),
             })
-            .await
-            .ok_or(SimulatorError::NoSuitableAdapter)?;
+            .await?;
 
         let (device, queue) = adapter
-            .request_device(
-                &wgpu::DeviceDescriptor {
-                    label: None,
-                    required_features: wgpu::Features::TEXTURE_ADAPTER_SPECIFIC_FORMAT_FEATURES,
-                    required_limits: Default::default(),
-                    memory_hints: Default::default(),
-                },
-                None,
-            )
+            .request_device(&wgpu::DeviceDescriptor {
+                label: None,
+                required_features: wgpu::Features::TEXTURE_ADAPTER_SPECIFIC_FORMAT_FEATURES,
+                required_limits: Default::default(),
+                memory_hints: Default::default(),
+                trace: Trace::Off,
+            })
             .await?;
 
         let swapchain_capabilities = surface.get_capabilities(&adapter);

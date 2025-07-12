@@ -13,6 +13,8 @@ pub enum SimulatorError {
     #[error("{0}")]
     RequestDeviceError(#[from] wgpu::RequestDeviceError),
     #[error("{0}")]
+    RequestAdapterError(#[from] wgpu::RequestAdapterError),
+    #[error("{0}")]
     SurfaceError(#[from] wgpu::SurfaceError),
     #[error("{0}")]
     ImageError(#[from] image::ImageError),
@@ -24,8 +26,6 @@ pub enum SimulatorError {
     TransportError(#[from] tonic::transport::Error),
     #[error("{0}")]
     JoinError(#[from] tokio::task::JoinError),
-    #[error("Failed to find adapter")]
-    NoSuitableAdapter,
     #[error("Failed to select proper surface texture format")]
     NoSuitableFormat,
 }
