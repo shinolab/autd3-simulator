@@ -7,9 +7,9 @@ use autd3_driver::{
     ethercat::DcSysTime,
 };
 use egui::{
-    ClippedPrimitive, DragValue, FullOutput, InputState, PointerButton, Vec2b, ViewportId,
-    ViewportIdMap, ViewportInfo, ViewportOutput, ahash::HashSet,
-    color_picker::color_picker_color32, epaint::textures,
+    ClippedPrimitive, DragValue, FullOutput, InputState, PointerButton, ViewportId, ViewportIdMap,
+    ViewportInfo, ViewportOutput, ahash::HashSet, color_picker::color_picker_color32,
+    epaint::textures,
 };
 use egui_plot::{GridMark, Line, PlotPoints};
 use egui_wgpu::{
