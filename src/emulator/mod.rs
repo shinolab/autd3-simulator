@@ -58,7 +58,7 @@ impl EmulatorWrapper {
         &self.transducers
     }
 
-    pub fn iter_mut(&mut self) -> impl Iterator<Item = Emulator> {
+    pub fn iter_mut<'a>(&'a mut self) -> impl Iterator<Item = Emulator<'a>> {
         self.cpus
             .iter_mut()
             .zip(self.visible.iter_mut())
