@@ -24,7 +24,7 @@ autd3-firmware-emulator = { version = "35.0.0", default-features = false }
 autd3-link-simulator = { version = "35.0.0", default-features = false, features = ["async-trait"] }
 autd3-protobuf = { version = "35.0.0", default-features = false, features = ["async-trait"] }
 bitflags = { version = "2.9.1", default-features = false }
-bytemuck = { version = "1.23.1", default-features = false, features = ["derive"] }
+bytemuck = { version = "1.23.2", default-features = false, features = ["derive"] }
 camera_controllers = { version = "0.35.2", default-features = false }
 clap = { version = "4.5.44", default-features = false, features = ["derive", "std", "usage", "wrap_help"] }
 egui = { version = "0.32.0", default-features = false, features = ["default_fonts", "serde"] }
