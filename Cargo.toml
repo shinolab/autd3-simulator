@@ -33,7 +33,7 @@ egui-winit = { version = "0.32.1", default-features = false, features = ["waylan
 egui_plot = { version = "0.33.0", default-features = false }
 futures-util = { version = "0.3.31", default-features = false }
 glam = { version = "0.30.5", default-features = false, features = ["std", "bytemuck", "serde"] }
-image = { version = "0.25.6", default-features = false, features = ["png"] }
+image = { version = "0.25.7", default-features = false, features = ["png"] }
 parking_lot = { version = "0.12.4", default-features = false }
 scarlet = { version = "1.2.0", default-features = false }
 serde = { version = "1.0.219", default-features = false, features = ["derive"] }
