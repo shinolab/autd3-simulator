@@ -243,7 +243,7 @@ checksum = "48b4bbd0c4ab3ca8cf068eb07dde167678511f47b6daad7860d1a28ed7be2584"
 dependencies = [
  "autd3-core",
  "autd3-protobuf",
- "tonic",
+ "tonic 0.13.1",
 ]
 
 [[package]]
@@ -257,7 +257,7 @@ dependencies = [
  "autd3-driver",
  "prost",
  "thiserror 2.0.16",
- "tonic",
+ "tonic 0.13.1",
  "zerocopy",
 ]
 
@@ -289,7 +289,7 @@ dependencies = [
  "strum 0.27.2",
  "thiserror 2.0.16",
  "tokio",
- "tonic",
+ "tonic 0.14.1",
  "tracing",
  "tracing-subscriber",
  "wgpu",
@@ -3042,7 +3042,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7e581ba15a835f4d9ea06c55ab1bd4dce26fc53752c69a04aac00703bfb49ba9"
 dependencies = [
  "async-trait",
- "axum",
  "base64",
  "bytes",
  "h2",
@@ -3057,6 +3056,28 @@ dependencies = [
  "prost",
  "socket2 0.5.10",
  "tokio",
+ "tokio-stream",
+ "tower",
+ "tower-layer",
+ "tower-service",
+ "tracing",
+]
+
+[[package]]
+name = "tonic"
+version = "0.14.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67ac5a8627ada0968acec063a4746bf79588aa03ccb66db2f75d7dce26722a40"
+dependencies = [
+ "axum",
+ "base64",
+ "bytes",
+ "http",
+ "http-body",
+ "http-body-util",
+ "percent-encoding",
+ "pin-project",
+ "sync_wrapper",
  "tokio-stream",
  "tower",
  "tower-layer",
