@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use std::time::Instant;
 
-use autd3_core::datagram::Segment;
+use autd3_core::firmware::Segment;
 use autd3_driver::{
     common::{METER, ULTRASOUND_FREQ, ULTRASOUND_PERIOD, mm},
     ethercat::DcSysTime,
@@ -961,10 +961,14 @@ impl EguiRenderer {
                     ui.label(format!("Segment: {segment:?}"));
 
                     if !is_gain_mode {
-                        ui.label(format!(
-                            "LoopBehavior: {:?}",
-                            cpu.fpga().stm_loop_behavior(segment)
-                        ));
+                        match cpu.fpga().stm_loop_count(segment) {
+                            0xFFFF => {
+                                ui.label("Loop: Infinite");
+                            }
+                            n => {
+                                ui.label(format!("Loop: {}", n + 1));
+                            }
+                        }
 
                         let stm_size = cpu.fpga().stm_cycle(segment);
                         ui.label(format!("Size: {stm_size}"));
@@ -1075,9 +1079,12 @@ impl EguiRenderer {
                                 cpu.fpga().current_mod_idx(),
                             );
                             let phase = d.phase.0 as u32;
-                            let pulse_width =
-                                cpu.fpga().to_pulse_width(d.intensity, m).pulse_width() as u32;
                             const T: u32 = ULTRASOUND_PERIOD_COUNT as u32;
+                            let pulse_width: u32 = cpu
+                                .fpga()
+                                .to_pulse_width(d.intensity, m)
+                                .pulse_width(T as _)
+                                .unwrap();
                             let rise = (phase + T - pulse_width / 2) % T;
                             let fall = (phase + pulse_width.div_ceil(2)) % T;
                             #[allow(clippy::collapsible_else_if)]

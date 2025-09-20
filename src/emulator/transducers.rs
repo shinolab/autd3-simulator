@@ -78,7 +78,7 @@ impl Transducers {
             self.body_pointer.push(body_cursor);
             let rot = dev.rotation();
             let rot = to_gl_rot(Quaternion::from_xyzw(rot.i, rot.j, rot.k, rot.w));
-            dev.into_iter().for_each(|tr| {
+            dev.iter().for_each(|tr| {
                 let pos = tr.position();
                 let pos = to_gl_pos(Vector3 {
                     x: pos.x,
@@ -106,7 +106,7 @@ impl Transducers {
                 dev.rotation().k,
                 dev.rotation().w,
             ));
-            dev.into_iter().for_each(|tr| {
+            dev.iter().for_each(|tr| {
                 let pos = tr.position();
                 let pos = to_gl_pos(Vector3 {
                     x: pos.x,
