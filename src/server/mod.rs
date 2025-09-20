@@ -9,7 +9,6 @@ use winit::event_loop::EventLoopProxy;
 use std::sync::Arc;
 
 use autd3_core::link::RxMessage;
-use futures_util::FutureExt;
 use std::net::ToSocketAddrs;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
@@ -41,7 +40,9 @@ impl Server {
                             .unwrap()
                             .next()
                             .unwrap(),
-                        receiver_shutdown.map(drop),
+                        async move {
+                            let _ = receiver_shutdown.await;
+                        },
                     )
                     .await?;
                 Ok(())
