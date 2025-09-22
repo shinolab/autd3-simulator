@@ -148,9 +148,9 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "autd3-core"
-version = "36.0.0-alpha.2"
+version = "36.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad83c324b7b164c5362de62fd5d1fcac8a954925ac9ef41e84ff8e87e621906c"
+checksum = "04a1ddc1f27c53159d946713ce16f14cfe70e7cf8a5411d56fa2c65dd0be167a"
 dependencies = [
  "autd3-derive",
  "bit-vec",
@@ -168,9 +168,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-derive"
-version = "36.0.0-alpha.2"
+version = "36.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f72c3a65f3dfb8e563412256b7089299a34697746d37a73746d4a580c56df90a"
+checksum = "a695f0312b3be71f70875f40a99c5b6aec5852fabfb9a39ead2f9232459fa65c"
 dependencies = [
  "proc-macro2",
  "quote",

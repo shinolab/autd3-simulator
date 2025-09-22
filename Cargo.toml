@@ -18,7 +18,7 @@ unity = ["use_meter", "left_handed"]
 
 [dependencies]
 anyhow = { version = "1.0.99" }
-autd3-core = { version = "36.0.0-alpha.2", default-features = false }
+autd3-core = { version = "36.0.1", default-features = false }
 autd3-driver = { version = "36.0.0-alpha.2", default-features = false }
 autd3-firmware-emulator = { version = "36.0.0-alpha.2", default-features = false }
 autd3-link-simulator = { version = "36.0.0-alpha.2", default-features = false, features = [] }
