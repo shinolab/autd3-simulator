@@ -179,9 +179,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-driver"
-version = "36.0.0-alpha.2"
+version = "36.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8727bc00f13be562eb422e9ff25974497afd6e3a68a7e41874a73d32f25bd138"
+checksum = "0ae8f75a068891bc31d8b39dc099b5b32f5c567c8237a84ef4bef6bfb6565baa"
 dependencies = [
  "autd3-core",
  "bitfield-struct",
