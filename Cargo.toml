@@ -1,6 +1,6 @@
 [package]
 name = "autd3-simulator"
-version = "36.0.1"
+version = "36.0.2"
 edition = "2024"
 authors = ["shun suzuki <suzuki@hapis.k.u-tokyo.ac.jp>"]
 
@@ -18,11 +18,11 @@ unity = ["use_meter", "left_handed"]
 
 [dependencies]
 anyhow = { version = "1.0.100" }
-autd3-core = { version = "36.0.1", default-features = false }
-autd3-driver = { version = "36.0.1", default-features = false }
-autd3-firmware-emulator = { version = "36.0.1", default-features = false }
-autd3-link-simulator = { version = "36.0.1", default-features = false, features = [] }
-autd3-protobuf = { version = "36.0.1", default-features = false, features = [] }
+autd3-core = { version = "36.0.2", default-features = false }
+autd3-driver = { version = "36.0.2", default-features = false }
+autd3-firmware-emulator = { version = "36.0.2", default-features = false }
+autd3-link-simulator = { version = "36.0.2", default-features = false, features = [] }
+autd3-protobuf = { version = "36.0.2", default-features = false, features = [] }
 bitflags = { version = "2.9.4", default-features = false }
 bytemuck = { version = "1.23.2", default-features = false, features = ["derive"] }
 camera_controllers = { version = "0.35.2", default-features = false }
