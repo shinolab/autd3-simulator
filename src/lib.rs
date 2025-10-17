@@ -24,4 +24,4 @@ pub(crate) const ZPARITY: f32 = -1.;
 pub(crate) const ZPARITY: f32 = 1.;
 
 pub(crate) const ULTRASOUND_PERIOD_COUNT: usize =
-    1 << autd3_driver::firmware::v12_1::fpga::ULTRASOUND_PERIOD_COUNT_BITS;
+    1 << autd3_core::firmware::ULTRASOUND_PERIOD_COUNT_BITS;

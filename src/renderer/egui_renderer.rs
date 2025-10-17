@@ -1,5 +1,5 @@
-use std::sync::Arc;
 use std::time::Instant;
+use std::{collections::BTreeMap, sync::Arc};
 
 use autd3_core::firmware::Segment;
 use autd3_driver::{
@@ -7,9 +7,8 @@ use autd3_driver::{
     ethercat::DcSysTime,
 };
 use egui::{
-    ClippedPrimitive, DragValue, FullOutput, InputState, PointerButton, ViewportId, ViewportIdMap,
-    ViewportInfo, ViewportOutput, ahash::HashSet, color_picker::color_picker_color32,
-    epaint::textures,
+    ClippedPrimitive, DragValue, FullOutput, InputState, PointerButton, ViewportId, ViewportInfo,
+    ViewportOutput, color_picker::color_picker_color32, epaint::textures,
 };
 use egui_plot::{GridMark, Line, PlotPoints};
 use egui_wgpu::{
@@ -41,7 +40,7 @@ pub struct EguiRenderer {
     renderer: egui_wgpu::Renderer,
     info: ViewportInfo,
     deferred_commands: Vec<egui::viewport::ViewportCommand>,
-    actions_requested: HashSet<ActionRequested>,
+    actions_requested: Vec<ActionRequested>,
     pending_full_output: egui::FullOutput,
     close: bool,
     is_first_frame: bool,
@@ -81,7 +80,16 @@ impl EguiRenderer {
             None,
             Some(2 * 1024),
         );
-        let renderer = Renderer::new(device, surface_config.format, None, 1, true);
+        let renderer = Renderer::new(
+            device,
+            surface_config.format,
+            egui_wgpu::RendererOptions {
+                msaa_samples: 1,
+                depth_stencil_format: None,
+                dithering: false,
+                predictable_texture_filtering: false,
+            },
+        );
 
         let mut info = ViewportInfo::default();
         egui_winit::update_viewport_info(&mut info, egui_winit.egui_ctx(), &window, true);
@@ -222,7 +230,7 @@ impl EguiRenderer {
             textures_delta,
         );
 
-        for action in self.actions_requested.drain() {
+        for action in self.actions_requested.drain(..) {
             match action {
                 ActionRequested::Cut => {
                     self.egui_winit
@@ -303,6 +311,7 @@ impl EguiRenderer {
                     load,
                     store: StoreOp::Store,
                 },
+                depth_slice: None,
             })],
             depth_stencil_attachment: None,
             timestamp_writes: None,
@@ -322,7 +331,7 @@ impl EguiRenderer {
 
     fn handle_viewport_output(
         &mut self,
-        viewport_output: &ViewportIdMap<ViewportOutput>,
+        viewport_output: &BTreeMap<ViewportId, ViewportOutput>,
         window: &Window,
     ) {
         for (
@@ -1083,7 +1092,7 @@ impl EguiRenderer {
                             let pulse_width: u32 = cpu
                                 .fpga()
                                 .to_pulse_width(d.intensity, m)
-                                .pulse_width(T as _)
+                                .pulse_width()
                                 .unwrap();
                             let rise = (phase + T - pulse_width / 2) % T;
                             let fall = (phase + pulse_width.div_ceil(2)) % T;

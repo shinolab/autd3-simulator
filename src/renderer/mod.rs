@@ -18,7 +18,7 @@ use depth_texture::DepthTexture;
 use egui::ViewportId;
 use egui_renderer::EguiRenderer;
 use egui_wgpu::ScreenDescriptor;
-use wgpu::Trace;
+use wgpu::{ExperimentalFeatures, Trace};
 use winit::{event::DeviceEvent, event_loop::EventLoopProxy, window::Window};
 
 pub struct Renderer {
@@ -60,6 +60,7 @@ impl Renderer {
                 required_limits: Default::default(),
                 memory_hints: Default::default(),
                 trace: Trace::Off,
+                experimental_features: ExperimentalFeatures::disabled(),
             })
             .await?;
 
@@ -171,6 +172,7 @@ impl Renderer {
                             load: wgpu::LoadOp::Clear(state.background()),
                             store: wgpu::StoreOp::Store,
                         },
+                        depth_slice: None,
                     })],
                     depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
                         view: self.depth_texture.view(),

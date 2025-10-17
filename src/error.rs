@@ -19,15 +19,13 @@ pub enum SimulatorError {
     #[error("{0}")]
     ImageError(#[from] image::ImageError),
     #[error("{0}")]
-    AUTDProtoBufError(#[from] autd3_protobuf::AUTDProtoBufError),
-    #[error("{0}")]
     IoError(#[from] std::io::Error),
-    #[error("{0}")]
-    TransportError(#[from] tonic::transport::Error),
     #[error("{0}")]
     JoinError(#[from] tokio::task::JoinError),
     #[error("Failed to select proper surface texture format")]
     NoSuitableFormat,
+    #[error("{0}")]
+    ServerError(String),
 }
 
 pub type Result<T> = std::result::Result<T, SimulatorError>;

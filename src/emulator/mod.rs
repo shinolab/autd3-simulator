@@ -139,7 +139,7 @@ impl EmulatorWrapper {
                         * cpu
                             .fpga()
                             .to_pulse_width(d.intensity, m)
-                            .pulse_width::<u32>(ULTRASOUND_PERIOD_COUNT as _)
+                            .pulse_width::<u32>()
                             .unwrap() as f32
                         / ULTRASOUND_PERIOD_COUNT as f32)
                         .sin();
