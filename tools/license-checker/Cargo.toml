@@ -4,7 +4,7 @@ version = "37.0.0"
 edition = "2024"
 
 [dependencies]
-anyhow = "1.0.72"
+anyhow = "1.0.100"
 cargo-about = "0.8.2"
 itertools = "0.14.0"
 krates = "0.20.0"

@@ -121,3 +121,42 @@ path = "license-mit"
 [[dep]]
 name = "windows_x86_64_msvc"
 path = "license-mit"
+
+[[dep]]
+name = "block"
+
+[[dep]]
+name = "block2"
+path = "LICENSE.txt"
+tag = "block2-${VERSION}"
+
+[[dep]]
+name = "dispatch"
+
+[[dep]]
+name = "malloc_buf"
+
+[[dep]]
+name = "objc-sys"
+path = "LICENSE.txt"
+tag = "objc-sys-${VERSION}"
+
+[[dep]]
+name = "objc2"
+path = "LICENSE.txt"
+tag = "objc2-${VERSION}"
+
+[[dep]]
+name = "objc2-app-kit"
+path = "LICENSE.txt"
+tag = "frameworks-${VERSION}"
+
+[[dep]]
+name = "objc2-encode"
+path = "LICENSE.md"
+tag = "objc2-encode-${VERSION}"
+
+[[dep]]
+name = "objc2-foundation"
+path = "LICENSE.txt"
+tag = "frameworks-${VERSION}"
