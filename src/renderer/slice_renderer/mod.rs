@@ -448,21 +448,11 @@ impl SliceRenderer {
         );
     }
 
-    pub fn update_color_map(&mut self, state: &State, queue: &Queue) {
+    pub fn update_color_map(&mut self, _state: &State, queue: &Queue) {
         let iter = (0..COLOR_MAP_TEXTURE_SIZE).map(|x| x as f64 / COLOR_MAP_TEXTURE_SIZE as f64);
-        let texels = state
-            .slice
-            .color_map
-            .color_map(iter)
+        let texels = crate::common::color_map::inferno_color_map(iter)
             .into_iter()
-            .flat_map(|color| {
-                [
-                    (color.r * 255.) as u8,
-                    (color.g * 255.) as u8,
-                    (color.b * 255.) as u8,
-                    255,
-                ]
-            })
+            .flat_map(|[r, g, b]| [(r * 255.) as u8, (g * 255.) as u8, (b * 255.) as u8, 255])
             .collect::<Vec<_>>();
         queue.write_texture(
             self.color_map_texture.as_image_copy(),

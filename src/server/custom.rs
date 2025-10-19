@@ -48,13 +48,12 @@
 // Response:
 // - 1 byte: status (0x00 = OK)
 
-use std::sync::Arc;
+use std::io::{Read, Write};
+use std::net::{TcpListener, TcpStream};
+use std::sync::{Arc, RwLock};
 
 use autd3_core::link::{RxMessage, TxMessage};
 use autd3_driver::geometry::Geometry;
-use parking_lot::RwLock;
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::{TcpListener, TcpStream};
 use winit::event_loop::EventLoopProxy;
 
 use crate::error::Result;
@@ -81,32 +80,31 @@ impl CustomServer {
         Self { rx_buf, proxy }
     }
 
-    async fn handle_client(&self, mut stream: TcpStream) -> Result<()> {
+    fn handle_client(&self, mut stream: TcpStream) -> Result<()> {
         loop {
             let mut msg_type = [0u8; 1];
-            if stream.read_exact(&mut msg_type).await.is_err() {
+            if stream.read_exact(&mut msg_type).is_err() {
                 break;
             }
 
             match msg_type[0] {
                 MSG_CONFIG_GEOMETRY => {
-                    self.handle_config_geometry(&mut stream).await?;
+                    self.handle_config_geometry(&mut stream)?;
                 }
                 MSG_UPDATE_GEOMETRY => {
-                    self.handle_update_geometry(&mut stream).await?;
+                    self.handle_update_geometry(&mut stream)?;
                 }
                 MSG_SEND_DATA => {
-                    self.handle_send_data(&mut stream).await?;
+                    self.handle_send_data(&mut stream)?;
                 }
                 MSG_READ_DATA => {
-                    self.handle_read_data(&mut stream).await?;
+                    self.handle_read_data(&mut stream)?;
                 }
                 MSG_CLOSE => {
-                    self.handle_close(&mut stream).await?;
+                    self.handle_close(&mut stream)?;
                     break;
                 }
                 _ => {
-                    tracing::warn!("Unknown message type: {}", msg_type[0]);
                     break;
                 }
             }
@@ -114,8 +112,8 @@ impl CustomServer {
         Ok(())
     }
 
-    async fn handle_config_geometry(&self, stream: &mut TcpStream) -> Result<()> {
-        let geometry = self.read_geometry(stream).await?;
+    fn handle_config_geometry(&self, stream: &mut TcpStream) -> Result<()> {
+        let geometry = self.read_geometry(stream)?;
         if self
             .proxy
             .send_event(UserEvent::Server(Signal::ConfigGeometry(geometry)))
@@ -125,12 +123,12 @@ impl CustomServer {
                 "Simulator is closed".to_string(),
             ));
         }
-        stream.write_all(&[STATUS_OK]).await?;
+        stream.write_all(&[STATUS_OK])?;
         Ok(())
     }
 
-    async fn handle_update_geometry(&self, stream: &mut TcpStream) -> Result<()> {
-        let geometry = self.read_geometry(stream).await?;
+    fn handle_update_geometry(&self, stream: &mut TcpStream) -> Result<()> {
+        let geometry = self.read_geometry(stream)?;
         if self
             .proxy
             .send_event(UserEvent::Server(Signal::UpdateGeometry(geometry)))
@@ -140,26 +138,26 @@ impl CustomServer {
                 "Simulator is closed".to_string(),
             ));
         }
-        stream.write_all(&[STATUS_OK]).await?;
+        stream.write_all(&[STATUS_OK])?;
         Ok(())
     }
 
-    async fn read_geometry(&self, stream: &mut TcpStream) -> Result<Geometry> {
+    fn read_geometry(&self, stream: &mut TcpStream) -> Result<Geometry> {
         let mut num_devices_buf = [0u8; 4];
-        stream.read_exact(&mut num_devices_buf).await?;
+        stream.read_exact(&mut num_devices_buf)?;
         let num_devices = u32::from_le_bytes(num_devices_buf);
 
         let mut devices = Vec::new();
 
         for _ in 0..num_devices {
             let mut pos_buf = [0u8; 12];
-            stream.read_exact(&mut pos_buf).await?;
+            stream.read_exact(&mut pos_buf)?;
             let x = f32::from_le_bytes([pos_buf[0], pos_buf[1], pos_buf[2], pos_buf[3]]);
             let y = f32::from_le_bytes([pos_buf[4], pos_buf[5], pos_buf[6], pos_buf[7]]);
             let z = f32::from_le_bytes([pos_buf[8], pos_buf[9], pos_buf[10], pos_buf[11]]);
 
             let mut rot_buf = [0u8; 16];
-            stream.read_exact(&mut rot_buf).await?;
+            stream.read_exact(&mut rot_buf)?;
             let w = f32::from_le_bytes([rot_buf[0], rot_buf[1], rot_buf[2], rot_buf[3]]);
             let i = f32::from_le_bytes([rot_buf[4], rot_buf[5], rot_buf[6], rot_buf[7]]);
             let j = f32::from_le_bytes([rot_buf[8], rot_buf[9], rot_buf[10], rot_buf[11]]);
@@ -177,14 +175,14 @@ impl CustomServer {
         Ok(autd3_core::geometry::Geometry::new(devices))
     }
 
-    async fn handle_send_data(&self, stream: &mut TcpStream) -> Result<()> {
+    fn handle_send_data(&self, stream: &mut TcpStream) -> Result<()> {
         let mut num_devices_buf = [0u8; 4];
-        stream.read_exact(&mut num_devices_buf).await?;
+        stream.read_exact(&mut num_devices_buf)?;
         let num_devices = u32::from_le_bytes(num_devices_buf) as usize;
 
         let tx_size = std::mem::size_of::<TxMessage>();
         let mut tx_data = vec![0u8; tx_size * num_devices];
-        stream.read_exact(&mut tx_data).await?;
+        stream.read_exact(&mut tx_data)?;
 
         let tx_messages: Vec<TxMessage> = tx_data
             .chunks_exact(tx_size)
@@ -201,13 +199,13 @@ impl CustomServer {
             ));
         }
 
-        stream.write_all(&[STATUS_OK]).await?;
+        stream.write_all(&[STATUS_OK])?;
         Ok(())
     }
 
-    async fn handle_read_data(&self, stream: &mut TcpStream) -> Result<()> {
+    fn handle_read_data(&self, stream: &mut TcpStream) -> Result<()> {
         let rx_data = {
-            let rx = self.rx_buf.read();
+            let rx = self.rx_buf.read().unwrap();
             let num_devices = rx.len() as u32;
             let rx_size = std::mem::size_of::<RxMessage>();
             let mut data = Vec::with_capacity(4 + rx_size * rx.len());
@@ -221,13 +219,13 @@ impl CustomServer {
             data
         };
 
-        stream.write_all(&[STATUS_OK]).await?;
-        stream.write_all(&rx_data).await?;
+        stream.write_all(&[STATUS_OK])?;
+        stream.write_all(&rx_data)?;
 
         Ok(())
     }
 
-    async fn handle_close(&self, stream: &mut TcpStream) -> Result<()> {
+    fn handle_close(&self, stream: &mut TcpStream) -> Result<()> {
         if self
             .proxy
             .send_event(UserEvent::Server(Signal::Close))
@@ -237,18 +235,15 @@ impl CustomServer {
                 "Simulator is closed".to_string(),
             ));
         }
-        stream.write_all(&[STATUS_OK]).await?;
+        stream.write_all(&[STATUS_OK])?;
         Ok(())
     }
 
-    pub async fn run(self, listener: TcpListener) -> Result<()> {
+    pub fn run(self, listener: TcpListener) -> Result<()> {
         loop {
-            let (stream, addr) = listener.accept().await?;
-            tracing::info!("New connection from: {}", addr);
+            let (stream, _addr) = listener.accept()?;
 
-            if let Err(e) = self.handle_client(stream).await {
-                tracing::error!("Error handling client: {:?}", e);
-            }
+            let _ = self.handle_client(stream);
         }
     }
 }

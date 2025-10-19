@@ -2,6 +2,7 @@ mod common;
 mod emulator;
 mod error;
 mod event;
+mod executor;
 mod renderer;
 mod server;
 mod simulator;

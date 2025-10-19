@@ -1,6 +1,9 @@
 mod transducers;
 
-use std::{f32::consts::PI, sync::Arc};
+use std::{
+    f32::consts::PI,
+    sync::{Arc, RwLock},
+};
 
 use autd3_core::{
     firmware::{Drive, Phase},
@@ -8,7 +11,6 @@ use autd3_core::{
 };
 use autd3_driver::{ethercat::DcSysTime, geometry::Geometry};
 use autd3_firmware_emulator::CPUEmulator;
-use parking_lot::RwLock;
 
 use crate::ULTRASOUND_PERIOD_COUNT;
 
@@ -99,6 +101,7 @@ impl EmulatorWrapper {
         {
             self.rx_buf
                 .write()
+                .unwrap()
                 .iter_mut()
                 .zip(self.cpus.iter())
                 .for_each(|(d, s)| {
@@ -154,7 +157,7 @@ impl EmulatorWrapper {
             .map(|dev| CPUEmulator::new(dev.idx(), dev.num_transducers()))
             .collect();
         self.transducers.initialize(geometry);
-        *self.rx_buf.write() = self.cpus.iter().map(|cpu| cpu.rx()).collect();
+        *self.rx_buf.write().unwrap() = self.cpus.iter().map(|cpu| cpu.rx()).collect();
         self.visible = vec![true; self.cpus.len()];
         self.enable = vec![true; self.cpus.len()];
         self.thermal = vec![false; self.cpus.len()];
@@ -185,6 +188,7 @@ impl EmulatorWrapper {
         });
         self.rx_buf
             .write()
+            .unwrap()
             .iter_mut()
             .zip(self.cpus.iter())
             .for_each(|(d, s)| {

@@ -3,46 +3,40 @@ mod custom;
 
 use crate::error::Result;
 use crate::event::UserEvent;
-use parking_lot::RwLock;
-use tokio::runtime::Runtime;
 use winit::event_loop::EventLoopProxy;
 
-use std::sync::Arc;
+use std::net::TcpListener;
+use std::sync::{Arc, RwLock};
+use std::thread::{self, JoinHandle};
 
 use autd3_core::link::RxMessage;
-use tokio::net::TcpListener;
-use tokio::task::JoinHandle;
 
-#[allow(clippy::type_complexity)]
 pub struct Server {
-    server_th: JoinHandle<Result<()>>,
+    _server_th: JoinHandle<Result<()>>,
 }
 
 impl Server {
     pub fn new(
-        runtime: &Runtime,
         port: u16,
         rx_buf: Arc<RwLock<Vec<RxMessage>>>,
         proxy: EventLoopProxy<UserEvent>,
     ) -> Result<Self> {
-        let server_th = runtime.spawn({
-            async move {
-                let listener = TcpListener::bind(format!("0.0.0.0:{port}")).await?;
-                tracing::info!("listening on port {}", port);
+        let server_th = thread::spawn(move || {
+            let listener = TcpListener::bind(format!("0.0.0.0:{port}"))?;
+            println!("listening on port {}", port);
 
-                custom::CustomServer::new(rx_buf, proxy)
-                    .run(listener)
-                    .await?;
-                Ok(())
-            }
+            custom::CustomServer::new(rx_buf, proxy).run(listener)?;
+            Ok(())
         });
 
-        Ok(Self { server_th })
+        Ok(Self {
+            _server_th: server_th,
+        })
     }
 
-    pub async fn shutdown(self) -> Result<()> {
-        let Self { server_th } = self;
-        server_th.abort();
+    pub fn shutdown(self) -> Result<()> {
+        // Note: std::thread::JoinHandle doesn't have abort()
+        // The thread will be automatically terminated when the program exits
         Ok(())
     }
 }
