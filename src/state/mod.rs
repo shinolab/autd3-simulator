@@ -6,7 +6,7 @@ use autd3_driver::{
 use glam::EulerRot;
 use serde::{Deserialize, Serialize};
 
-use crate::{Quaternion, Vector2, Vector3, ZPARITY, common::color_map::ColorMap};
+use crate::{Quaternion, Vector2, Vector3, ZPARITY};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CameraState {
@@ -34,7 +34,6 @@ pub struct SliceState {
     pub pos: Vector3,
     pub rot: Vector3,
     pub size: Vector2,
-    pub color_map: ColorMap,
     pub pressure_max: f32,
 }
 
@@ -95,7 +94,6 @@ impl std::default::Default for State {
                 pos: Vector3::new(86.6252 * mm, 66.7133 * mm, 150.0 * mm * ZPARITY),
                 rot: Vector3::new(90.0 * ZPARITY, 0., 0.),
                 size: Vector2::new(300.0 * mm, 300.0 * mm),
-                color_map: ColorMap::Inferno,
                 pressure_max: 5000.,
             },
             background: egui::Color32::from_rgb(60, 60, 60),

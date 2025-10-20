@@ -1,7 +1,8 @@
-use std::{sync::Arc, time::Instant};
+use std::{
+    sync::{Arc, RwLock},
+    time::Instant,
+};
 
-use parking_lot::RwLock;
-use tokio::runtime::{Builder, Runtime};
 use wgpu::InstanceFlags;
 use winit::{
     application::ApplicationHandler,
@@ -20,7 +21,6 @@ use crate::{
 };
 
 pub struct Simulator {
-    runtime: Runtime,
     server: Option<Server>,
     emulator: EmulatorWrapper,
     instance: wgpu::Instance,
@@ -35,15 +35,8 @@ pub struct Simulator {
 
 impl Simulator {
     pub fn run(event_loop: winit::event_loop::EventLoop<UserEvent>, state: State) -> Result<State> {
-        let runtime = Builder::new_multi_thread().enable_all().build()?;
-
         let rx_buf = Arc::new(RwLock::default());
-        let server = Server::new(
-            &runtime,
-            state.port,
-            rx_buf.clone(),
-            event_loop.create_proxy(),
-        )?;
+        let server = Server::new(state.port, rx_buf.clone(), event_loop.create_proxy())?;
 
         let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
             backends: wgpu::Backends::PRIMARY,
@@ -56,7 +49,6 @@ impl Simulator {
         });
 
         let mut app = Self {
-            runtime,
             instance,
             repaint_proxy: Some(event_loop.create_proxy()),
             server: Some(server),
@@ -88,7 +80,6 @@ impl Simulator {
         egui_ctx: &egui::Context,
         event_loop: &ActiveEventLoop,
     ) -> Result<Window> {
-        tracing::info!("Initializing window...");
         let viewport_builder = egui::ViewportBuilder::default()
             .with_inner_size([self.state.window_size.0 as _, self.state.window_size.1 as _])
             .with_visible(false)
@@ -100,7 +91,7 @@ impl Simulator {
     fn init_run_state(&mut self, egui_ctx: egui::Context, window: Window) -> Result<()> {
         let window = Arc::new(window);
 
-        self.renderer = Some(self.runtime.block_on(Renderer::new(
+        self.renderer = Some(Renderer::new(
             &self.instance,
             self.repaint_proxy.take().unwrap(),
             egui_ctx,
@@ -108,7 +99,7 @@ impl Simulator {
             self.state.window_size.0,
             self.state.window_size.1,
             &self.state,
-        ))?);
+        )?);
         self.window = Some(window);
 
         Ok(())
@@ -146,11 +137,6 @@ impl Simulator {
                 }
                 crate::event::Signal::Close => {
                     self.emulator.clear();
-                    tracing::info!("Server is closed by client");
-                    tracing::info!(
-                        "Waiting for client connection on http://0.0.0.0:{}",
-                        self.state.port
-                    );
                 }
             }
         }
@@ -381,13 +367,7 @@ impl ApplicationHandler<UserEvent> for Simulator {
 
     fn exiting(&mut self, _: &winit::event_loop::ActiveEventLoop) {
         if let Some(server) = self.server.take() {
-            tracing::info!("Shutting down server...");
-            let r = self.runtime.block_on(server.shutdown());
-            if let Err(err) = r {
-                tracing::error!("Failed to shutdown server: {:?}", err);
-            } else {
-                tracing::info!("Shutting down server...done");
-            }
+            let _ = server.shutdown();
         }
     }
 }

@@ -1,4 +1,5 @@
 use std::{
+    env,
     error::Error,
     fs::{self, File, OpenOptions},
     io::{BufReader, Write},
@@ -6,9 +7,6 @@ use std::{
 };
 
 use autd3_simulator::{Simulator, State};
-use clap::Parser;
-use tracing::level_filters::LevelFilter;
-use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 fn parse_key_val<T, U>(s: &str) -> Result<(T, U), Box<dyn Error + Send + Sync + 'static>>
 where
@@ -23,39 +21,108 @@ where
     Ok((s[..pos].parse()?, s[pos + 1..].parse()?))
 }
 
-#[derive(Parser)]
-#[command(author, version, about, long_about = None)]
-#[command(
-    help_template = "Author: {author-with-newline} {about-section}Version: {version} \n\n {usage-heading} {usage} \n\n {all-args} {tab}"
-)]
 struct Args {
-    /// Windows Size (Optional, if set, overrides settings from file)
-    #[arg(short = 'w', long = "window_size", value_name = "Width,Height" , value_parser = parse_key_val::<u32, u32>)]
     window_size: Option<(u32, u32)>,
-
-    /// Port (Optional, if set, overrides settings from file)
-    #[arg(short = 'p', long = "port")]
     port: Option<u16>,
-
-    /// Vsync (Optional, if set, overrides settings from file)
-    #[arg(short = 'v', long = "vsync")]
     vsync: Option<bool>,
-
-    /// Setting file dir
-    #[arg(long = "setting_dir")]
     setting_dir: Option<String>,
-
-    /// Setting file name
-    #[arg(short = 's', long = "setting_file", default_value = "settings.json")]
     setting_file: String,
-
-    /// Debug mode
-    #[arg(short = 'd', long = "debug", default_value = "false")]
     debug: bool,
 }
 
-fn main() -> anyhow::Result<()> {
-    let arg = Args::parse();
+impl Args {
+    fn parse() -> Result<Self, Box<dyn Error>> {
+        let mut args = env::args().skip(1);
+        let mut window_size = None;
+        let mut port = None;
+        let mut vsync = None;
+        let mut setting_dir = None;
+        let mut setting_file = String::from("settings.json");
+        let mut debug = false;
+
+        while let Some(arg) = args.next() {
+            match arg.as_str() {
+                "-w" | "--window_size" => {
+                    let val = args
+                        .next()
+                        .ok_or("--window_size requires a value (Width,Height)")?;
+                    window_size = Some(parse_key_val(&val).map_err(|e| e.to_string())?);
+                }
+                "-p" | "--port" => {
+                    let val = args.next().ok_or("--port requires a value")?;
+                    port = Some(
+                        val.parse()
+                            .map_err(|e: std::num::ParseIntError| e.to_string())?,
+                    );
+                }
+                "-v" | "--vsync" => {
+                    let val = args.next().ok_or("--vsync requires a value")?;
+                    vsync = Some(
+                        val.parse()
+                            .map_err(|e: std::str::ParseBoolError| e.to_string())?,
+                    );
+                }
+                "--setting_dir" => {
+                    setting_dir = Some(args.next().ok_or("--setting_dir requires a value")?);
+                }
+                "-s" | "--setting_file" => {
+                    setting_file = args.next().ok_or("--setting_file requires a value")?;
+                }
+                "-d" | "--debug" => {
+                    debug = true;
+                }
+                "-h" | "--help" => {
+                    Self::print_help();
+                    std::process::exit(0);
+                }
+                "--version" => {
+                    println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+                    std::process::exit(0);
+                }
+                _ => {
+                    return Err(format!("Unknown argument: {}", arg).into());
+                }
+            }
+        }
+
+        Ok(Self {
+            window_size,
+            port,
+            vsync,
+            setting_dir,
+            setting_file,
+            debug,
+        })
+    }
+
+    fn print_help() {
+        println!("Author: {} ", env!("CARGO_PKG_AUTHORS"));
+        println!("{}", env!("CARGO_PKG_DESCRIPTION"));
+        println!("Version: {} \n", env!("CARGO_PKG_VERSION"));
+        println!("USAGE:");
+        println!("    {} [OPTIONS]\n", env!("CARGO_PKG_NAME"));
+        println!("OPTIONS:");
+        println!("    -w, --window_size <Width,Height>");
+        println!("            Windows Size (Optional, if set, overrides settings from file)\n");
+        println!("    -p, --port <PORT>");
+        println!("            Port (Optional, if set, overrides settings from file)\n");
+        println!("    -v, --vsync <VSYNC>");
+        println!("            Vsync (Optional, if set, overrides settings from file)\n");
+        println!("    --setting_dir <DIR>");
+        println!("            Setting file dir\n");
+        println!("    -s, --setting_file <FILE>");
+        println!("            Setting file name [default: settings.json]\n");
+        println!("    -d, --debug");
+        println!("            Debug mode\n");
+        println!("    -h, --help");
+        println!("            Print help\n");
+        println!("    --version");
+        println!("            Print version");
+    }
+}
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let arg = Args::parse()?;
 
     let port = arg.port;
     let window_size = arg.window_size;
@@ -67,27 +134,13 @@ fn main() -> anyhow::Result<()> {
     let vsync = arg.vsync;
     let debug = arg.debug;
 
-    let filter = if debug {
-        EnvFilter::builder()
-            .with_default_directive(LevelFilter::DEBUG.into())
-            .parse("wgpu_core=warn,simulator=debug")?
-    } else {
-        EnvFilter::builder()
-            .with_default_directive(LevelFilter::INFO.into())
-            .parse("wgpu_core=off,simulator=info")?
-    };
-    tracing_subscriber::registry()
-        .with(fmt::layer().with_ansi(false))
-        .with(filter)
-        .init();
-
     let mut state: State = if settings_path.exists() {
         let file = File::open(&settings_path)?;
         let reader = BufReader::new(file);
         match serde_json::from_reader(reader) {
             Ok(state) => state,
             Err(e) => {
-                tracing::error!(
+                eprintln!(
                     "Failed to parse settings file ({}): {}, using default settings.",
                     settings_path.display(),
                     e
@@ -96,7 +149,7 @@ fn main() -> anyhow::Result<()> {
             }
         }
     } else {
-        tracing::info!(
+        eprintln!(
             "Settings file ({}) not found, using default settings.",
             settings_path.display()
         );

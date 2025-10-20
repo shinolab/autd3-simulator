@@ -1,0 +1,162 @@
+[[dep]]
+name = "ab_glyph"
+path = "LICENSE"
+tag = "ab-glyph-${VERSION}"
+
+[[dep]]
+name = "ab_glyph_rasterizer"
+path = "LICENSE"
+tag = "ab-glyph-rasterizer-${VERSION}"
+
+[[dep]]
+name = "ecolor"
+path = "LICENSE-MIT"
+tag = "${VERSION}"
+
+[[dep]]
+name = "egui"
+path = "LICENSE-MIT"
+tag = "${VERSION}"
+
+[[dep]]
+name = "egui-wgpu"
+path = "LICENSE-MIT"
+tag = "${VERSION}"
+
+[[dep]]
+name = "egui-winit"
+path = "LICENSE-MIT"
+tag = "${VERSION}"
+
+[[dep]]
+name = "egui_plot"
+path = "LICENSE-MIT"
+tag = "${VERSION}"
+
+[[dep]]
+name = "emath"
+path = "LICENSE-MIT"
+tag = "${VERSION}"
+
+[[dep]]
+name = "epaint"
+path = "LICENSE-MIT"
+tag = "${VERSION}"
+
+[[dep]]
+name = "libm"
+path = "libm/LICENSE.txt"
+tag = "libm-v${VERSION}"
+
+[[dep]]
+name = "owned_ttf_parser"
+path = "LICENSE"
+tag = "${VERSION}"
+
+[[dep]]
+name = "profiling"
+path = "LICENSE-MIT"
+
+[[dep]]
+name = "ryu"
+path = "LICENSE-APACHE"
+tag = "${VERSION}"
+
+[[dep]]
+name = "type-map"
+path = "LICENSE-MIT"
+
+[[dep]]
+name = "windows"
+path = "license-mit"
+
+[[dep]]
+name = "windows-collections"
+path = "license-mit"
+
+[[dep]]
+name = "windows-core"
+path = "license-mit"
+
+[[dep]]
+name = "windows-future"
+path = "license-mit"
+
+[[dep]]
+name = "windows-implement"
+path = "license-mit"
+
+[[dep]]
+name = "windows-interface"
+path = "license-mit"
+
+[[dep]]
+name = "windows-link"
+path = "license-mit"
+
+[[dep]]
+name = "windows-numerics"
+path = "license-mit"
+
+[[dep]]
+name = "windows-result"
+path = "license-mit"
+
+[[dep]]
+name = "windows-strings"
+path = "license-mit"
+
+[[dep]]
+name = "windows-sys"
+path = "license-mit"
+
+[[dep]]
+name = "windows-targets"
+path = "license-mit"
+
+[[dep]]
+name = "windows-threading"
+path = "license-mit"
+
+[[dep]]
+name = "windows_x86_64_msvc"
+path = "license-mit"
+
+[[dep]]
+name = "block"
+
+[[dep]]
+name = "block2"
+path = "LICENSE.txt"
+tag = "block2-${VERSION}"
+
+[[dep]]
+name = "dispatch"
+
+[[dep]]
+name = "malloc_buf"
+
+[[dep]]
+name = "objc-sys"
+path = "LICENSE.txt"
+tag = "objc-sys-${VERSION}"
+
+[[dep]]
+name = "objc2"
+path = "LICENSE.txt"
+tag = "objc2-${VERSION}"
+
+[[dep]]
+name = "objc2-app-kit"
+path = "LICENSE.txt"
+tag = "frameworks-${VERSION}"
+
+[[dep]]
+name = "objc2-encode"
+path = "LICENSE.md"
+tag = "objc2-encode-${VERSION}"
+
+[[dep]]
+name = "objc2-foundation"
+path = "LICENSE.txt"
+tag = "frameworks-${VERSION}"

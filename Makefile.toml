@@ -5,9 +5,6 @@ skip_core_tasks = true
 [tasks.check]
 dependencies = ["format", "build", "build-unity", "lint", "license"]
 
-[tasks.ci]
-dependencies = ["format", "build", "build-unity", "lint"]
-
 [tasks.format]
 ignore_errors = true
 command = "cargo"
@@ -52,5 +49,5 @@ args = ["update"]
 [tasks.license]
 cwd = "./tools/license-checker"
 command = "cargo"
-args = ["run"]
+args = ["run", "--release"]
 dependencies = ["update"]

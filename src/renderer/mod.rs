@@ -34,7 +34,7 @@ pub struct Renderer {
 }
 
 impl Renderer {
-    pub async fn new(
+    pub fn new(
         instance: &wgpu::Instance,
         event_loop_proxy: EventLoopProxy<UserEvent>,
         egui_ctx: egui::Context,
@@ -45,24 +45,22 @@ impl Renderer {
     ) -> Result<Self> {
         let surface = instance.create_surface(window.clone())?;
 
-        let adapter = instance
-            .request_adapter(&wgpu::RequestAdapterOptions {
+        let adapter =
+            crate::executor::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
                 power_preference: wgpu::PowerPreference::default(),
                 force_fallback_adapter: false,
                 compatible_surface: Some(&surface),
-            })
-            .await?;
+            }))?;
 
-        let (device, queue) = adapter
-            .request_device(&wgpu::DeviceDescriptor {
+        let (device, queue) =
+            crate::executor::block_on(adapter.request_device(&wgpu::DeviceDescriptor {
                 label: None,
                 required_features: wgpu::Features::TEXTURE_ADAPTER_SPECIFIC_FORMAT_FEATURES,
                 required_limits: Default::default(),
                 memory_hints: Default::default(),
                 trace: Trace::Off,
                 experimental_features: ExperimentalFeatures::disabled(),
-            })
-            .await?;
+            }))?;
 
         let swapchain_capabilities = surface.get_capabilities(&adapter);
         let swapchain_format = swapchain_capabilities

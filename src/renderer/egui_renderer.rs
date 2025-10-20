@@ -20,7 +20,6 @@ use egui_winit::{
     winit::{self, event::DeviceEvent},
 };
 use glam::{EulerRot, Quat};
-use strum::IntoEnumIterator;
 use wgpu::{Device, Queue, SurfaceConfiguration};
 use winit::{event_loop::EventLoopProxy, window::Window};
 
@@ -28,8 +27,7 @@ use crate::emulator::EmulatorWrapper;
 use crate::event::{EventResult, UserEvent};
 use crate::state::Tab;
 use crate::update_flag::UpdateFlag;
-use crate::{ULTRASOUND_PERIOD_COUNT, common::color_map::ColorMap};
-use crate::{Vector3, ZPARITY, error::Result};
+use crate::{ULTRASOUND_PERIOD_COUNT, Vector3, ZPARITY, error::Result};
 
 const MIN_COL_WIDTH: f32 = 120.;
 const SPACING: [f32; 2] = [2.0, 4.0];
@@ -579,21 +577,6 @@ impl EguiRenderer {
             .spacing(SPACING)
             .striped(true)
             .show(ui, |ui| {
-                ui.label("Coloring:");
-                egui::ComboBox::from_label("")
-                    .selected_text(format!("{:?}", state.slice.color_map))
-                    .show_ui(ui, |ui| {
-                        ColorMap::iter().for_each(|c| {
-                            if ui
-                                .selectable_value(&mut state.slice.color_map, c, format!("{c:?}"))
-                                .changed()
-                            {
-                                update_flag.set(UpdateFlag::UPDATE_SLICE_COLOR_MAP, true);
-                            }
-                        });
-                    });
-                ui.end_row();
-
                 ui.label("Max pressure [Pa]:");
                 if ui
                     .add(

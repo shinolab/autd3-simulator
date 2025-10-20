@@ -42,7 +42,7 @@ jobs:
       - uses: ./.github/actions/setup-build
         with:
           os: ${{ matrix.os }}
-      - run: cargo make ci
+      - run: cargo make check
 
   all-tests-passed:
     if: ${{ always() }}
