@@ -6,21 +6,8 @@ on:
     - 'v*'
 
 jobs:
-  license:
-    name: license
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - uses: ./.github/actions/setup-build
-        with:
-          os: ubuntu-latest
-      - run: cargo make license
-
   release:
     name: create-github-release
-    needs: [license]
     runs-on: ubuntu-latest
     steps:
     - id: create_release
@@ -67,14 +54,15 @@ jobs:
           result-encoding: string
           script: |
             return 'autd3-simulator-'+context.payload.ref.replace(/refs\/tags\//, '')+'-${{ matrix.name }}-${{ matrix.arch }}';
+      - run: cargo make license
       - run: cargo make build-unity      
       - run: cargo make build
-      - run: Compress-Archive -Path ./target/release/autd3-simulator.exe, ./target/release/autd3-simulator-unity.exe, LICENSE, ThirdPartyNotice.txt -DestinationPath assets.zip
+      - run: Compress-Archive -Path ./target/release/autd3-simulator.exe, ./target/release/autd3-simulator-unity.exe, LICENSE, ThirdPartyNotices.txt -DestinationPath assets.zip
         if: ${{ matrix.os == 'windows-latest' }}
       - run: |
           cp ./target/release/autd3-simulator autd3-simulator
           cp ./target/release/autd3-simulator-unity autd3-simulator-unity 
-          tar -zcvf assets.tar.gz autd3-simulator autd3-simulator-unity LICENSE ThirdPartyNotice.txt
+          tar -zcvf assets.tar.gz autd3-simulator autd3-simulator-unity LICENSE ThirdPartyNotices.txt
         if: ${{ matrix.os != 'windows-latest'}}
       - uses: actions/download-artifact@v4
         with:
