@@ -1,4 +1,4 @@
-use autd3_driver::autd3_device::AUTD3;
+use autd3_core::devices::AUTD3;
 use bytemuck::{Pod, Zeroable};
 use egui_wgpu::wgpu;
 use image::{ImageBuffer, Rgba};

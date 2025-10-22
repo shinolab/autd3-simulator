@@ -89,9 +89,9 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "autd3-core"
-version = "37.0.0-alpha.3"
+version = "37.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "650443dbdb9e0b964306c8bb53da938a86a143b6804da0e191d85884dfe526a4"
+checksum = "a9b7e1dbfea95494cbefba16037d3b15728baeaa44bd1767361e28400f315161"
 dependencies = [
  "autd3-derive",
  "time",
@@ -99,46 +99,36 @@ dependencies = [
 
 [[package]]
 name = "autd3-derive"
-version = "37.0.0-alpha.3"
+version = "37.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7bc301c4edce4d9c7231db6ed56021200885a131438e6272552b1eea5d53120f"
+checksum = "5feef8befed902f25ace5b704b87de06d6abde9eaf7a7f26a6d22509af575a58"
 
 [[package]]
 name = "autd3-driver"
-version = "37.0.0-alpha.3"
+version = "37.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "78f13b6d7238692b6a997716d0aec5f3d434eecf7d8aee6148e0e46456247139"
+checksum = "4601068f8098a134db600b76f6e06b916d9339c4c6520f48d8352ad2cfc7e7c5"
 dependencies = [
  "autd3-core",
 ]
 
 [[package]]
 name = "autd3-firmware-emulator"
-version = "37.0.0-alpha.3"
+version = "37.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42ea9f4989af1cb5132854f88429aa40aa322e0ccd7a9378ec07a4f0719cfdc1"
+checksum = "7f1cd427878602b026f562068452527485d737ab31d897a01e36da38ac1d910f"
 dependencies = [
  "autd3-core",
  "autd3-driver",
-]
-
-[[package]]
-name = "autd3-link-simulator"
-version = "37.0.0-alpha.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3dbc73b8c4902ce78c5b14a3f281a31e70f2bfbf58a9da9246bfef1b411b44d"
-dependencies = [
- "autd3-core",
 ]
 
 [[package]]
 name = "autd3-simulator"
-version = "37.0.0-alpha.3"
+version = "37.0.0"
 dependencies = [
  "autd3-core",
  "autd3-driver",
  "autd3-firmware-emulator",
- "autd3-link-simulator",
  "bytemuck",
  "egui",
  "egui-wgpu",
@@ -875,9 +865,9 @@ checksum = "f52b00d39961fc5b2736ea853c9cc86238e165017a493d1d5c8eac6bdc4cc273"
 
 [[package]]
 name = "memmap2"
-version = "0.9.8"
+version = "0.9.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "843a98750cd611cc2965a8213b53b43e715f13c37a9e096c6408e69990961db7"
+checksum = "744133e4a0e0a658e1374cf3bf8e415c4052a15a111acd372764c55b4177d490"
 dependencies = [
  "libc",
 ]
@@ -1791,9 +1781,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.19"
+version = "1.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f63a545481291138910575129486daeaf8ac54aee4387fe7906919f7830c7d9d"
+checksum = "462eeb75aeb73aea900253ce739c8e18a67423fadf006037cd3ff27e82748a06"
 
 [[package]]
 name = "unicode-segmentation"
