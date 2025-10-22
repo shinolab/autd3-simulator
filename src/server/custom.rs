@@ -1,7 +1,5 @@
 // # Protocol Specification
 //
-// This link uses a simple TCP-based binary protocol for communication with the simulator.
-//
 // ## Message Types
 //
 // - `0x01`: Configure Geometry
@@ -9,6 +7,11 @@
 // - `0x03`: Send Data
 // - `0x04`: Read Data
 // - `0x05`: Close
+//
+// ## Response Status Codes
+//
+// - `0x00`: OK
+// - `0xFF`: Error
 //
 // ## Message Formats
 //
@@ -20,8 +23,13 @@
 //   - 12 bytes: position (3x f32, little-endian)
 //   - 16 bytes: rotation quaternion (w, i, j, k as f32, little-endian)
 //
-// Response:
+// Response (Success):
 // - 1 byte: status (0x00 = OK)
+//
+// Response (Error):
+// - 1 byte: status (0xFF = Error)
+// - 4 bytes: error message length (u32, little-endian)
+// - N bytes: error message (UTF-8 string)
 //
 // ### Send Data
 // Request:
@@ -29,24 +37,39 @@
 // - 4 bytes: number of devices (u32, little-endian)
 // - Raw TxMessage data for each device
 //
-// Response:
+// Response (Success):
 // - 1 byte: status (0x00 = OK)
+//
+// Response (Error):
+// - 1 byte: status (0xFF = Error)
+// - 4 bytes: error message length (u32, little-endian)
+// - N bytes: error message (UTF-8 string)
 //
 // ### Read Data
 // Request:
 // - 1 byte: message type (0x04)
 //
-// Response:
+// Response (Success):
 // - 1 byte: status (0x00 = OK)
 // - 4 bytes: number of devices (u32, little-endian)
 // - Raw RxMessage data for each device
+//
+// Response (Error):
+// - 1 byte: status (0xFF = Error)
+// - 4 bytes: error message length (u32, little-endian)
+// - N bytes: error message (UTF-8 string)
 //
 // ### Close
 // Request:
 // - 1 byte: message type (0x05)
 //
-// Response:
+// Response (Success):
 // - 1 byte: status (0x00 = OK)
+//
+// Response (Error):
+// - 1 byte: status (0xFF = Error)
+// - 4 bytes: error message length (u32, little-endian)
+// - N bytes: error message (UTF-8 string)
 
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
@@ -66,6 +89,7 @@ const MSG_READ_DATA: u8 = 0x04;
 const MSG_CLOSE: u8 = 0x05;
 
 const STATUS_OK: u8 = 0x00;
+const STATUS_ERROR: u8 = 0xFF;
 
 pub struct CustomServer {
     pub(crate) rx_buf: Arc<RwLock<Vec<RxMessage>>>,
@@ -80,6 +104,15 @@ impl CustomServer {
         Self { rx_buf, proxy }
     }
 
+    fn write_error(stream: &mut TcpStream, error_msg: &str) -> std::io::Result<()> {
+        stream.write_all(&[STATUS_ERROR])?;
+        let msg_bytes = error_msg.as_bytes();
+        let msg_len = msg_bytes.len() as u32;
+        stream.write_all(&msg_len.to_le_bytes())?;
+        stream.write_all(msg_bytes)?;
+        Ok(())
+    }
+
     fn handle_client(&self, mut stream: TcpStream) -> Result<()> {
         loop {
             let mut msg_type = [0u8; 1];
@@ -87,26 +120,26 @@ impl CustomServer {
                 break;
             }
 
-            match msg_type[0] {
-                MSG_CONFIG_GEOMETRY => {
-                    self.handle_config_geometry(&mut stream)?;
-                }
-                MSG_UPDATE_GEOMETRY => {
-                    self.handle_update_geometry(&mut stream)?;
-                }
-                MSG_SEND_DATA => {
-                    self.handle_send_data(&mut stream)?;
-                }
-                MSG_READ_DATA => {
-                    self.handle_read_data(&mut stream)?;
-                }
+            let result = match msg_type[0] {
+                MSG_CONFIG_GEOMETRY => self.handle_config_geometry(&mut stream),
+                MSG_UPDATE_GEOMETRY => self.handle_update_geometry(&mut stream),
+                MSG_SEND_DATA => self.handle_send_data(&mut stream),
+                MSG_READ_DATA => self.handle_read_data(&mut stream),
                 MSG_CLOSE => {
-                    self.handle_close(&mut stream)?;
-                    break;
+                    let res = self.handle_close(&mut stream);
+                    if res.is_ok() {
+                        break;
+                    }
+                    res
                 }
                 _ => {
                     break;
                 }
+            };
+
+            if let Err(e) = result {
+                let _ = Self::write_error(&mut stream, &e.to_string());
+                break;
             }
         }
         Ok(())

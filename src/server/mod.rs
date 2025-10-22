@@ -1,4 +1,3 @@
-// mod grpc;
 mod custom;
 
 use crate::error::Result;
@@ -35,8 +34,6 @@ impl Server {
     }
 
     pub fn shutdown(self) -> Result<()> {
-        // Note: std::thread::JoinHandle doesn't have abort()
-        // The thread will be automatically terminated when the program exits
         Ok(())
     }
 }
