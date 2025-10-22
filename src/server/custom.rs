@@ -197,7 +197,7 @@ impl CustomServer {
             let k = f32::from_le_bytes([rot_buf[12], rot_buf[13], rot_buf[14], rot_buf[15]]);
 
             devices.push(
-                autd3_driver::autd3_device::AUTD3 {
+                autd3_core::devices::AUTD3 {
                     pos: autd3_core::geometry::Point3::new(x, y, z),
                     rot: autd3_core::geometry::UnitQuaternion { w, i, j, k },
                 }
