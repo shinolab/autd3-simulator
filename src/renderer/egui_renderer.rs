@@ -1070,9 +1070,9 @@ impl EguiRenderer {
                                 cpu.fpga().current_mod_segment(),
                                 cpu.fpga().current_mod_idx(),
                             );
-                            let phase = d.phase.0 as u32;
-                            const T: u32 = ULTRASOUND_PERIOD_COUNT as u32;
-                            let pulse_width: u32 = cpu
+                            let phase = d.phase.0 as u16;
+                            const T: u16 = ULTRASOUND_PERIOD_COUNT as u16;
+                            let pulse_width: u16 = cpu
                                 .fpga()
                                 .to_pulse_width(d.intensity, m)
                                 .pulse_width()

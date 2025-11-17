@@ -1,6 +1,6 @@
 [package]
 name = "autd3-simulator"
-version = "37.0.0"
+version = "38.0.0"
 edition = "2024"
 authors = ["shun suzuki <suzuki@hapis.k.u-tokyo.ac.jp>"]
 
@@ -16,16 +16,17 @@ left_handed = ["autd3-core/left_handed"]
 unity = ["use_meter", "left_handed"]
 
 [dependencies]
-autd3-core = { version = "37.0.0", default-features = false, features = ["time", "devices"] }
-autd3-driver = { version = "37.0.0", default-features = false }
-autd3-firmware-emulator = { version = "37.0.0", default-features = false }
+autd3-core = { version = "38.0.0", default-features = false, features = ["time", "devices"] }
+autd3-driver = { version = "38.0.0", default-features = false }
+autd3-firmware-emulator = { version = "38.0.0", default-features = false }
+autd3-link-remote = { version = "38.0.0", default-features = false, features = ["server"] }
 bytemuck = { version = "1.24.0", default-features = false, features = ["derive"] }
-egui = { version = "0.33.0", default-features = false, features = ["default_fonts", "serde"] }
-egui-wgpu = { version = "0.33.0", default-features = false, features = ["wayland", "winit"] }
-egui-winit = { version = "0.33.0", default-features = false, features = ["wayland"] }
+egui = { version = "0.33.2", default-features = false, features = ["default_fonts", "serde"] }
+egui-wgpu = { version = "0.33.2", default-features = false, features = ["wayland", "winit"] }
+egui-winit = { version = "0.33.2", default-features = false, features = ["wayland"] }
 egui_plot = { version = "0.34.0", default-features = false }
-glam = { version = "0.30.8", default-features = false, features = ["std", "bytemuck", "serde"] }
-image = { version = "0.25.8", default-features = false, features = ["png"] }
+glam = { version = "0.30.9", default-features = false, features = ["std", "bytemuck", "serde"] }
+image = { version = "0.25.9", default-features = false, features = ["png"] }
 serde = { version = "1.0.228", default-features = false, features = ["derive"] }
 serde_json = { version = "1.0.145", default-features = false, features = ["std"] }
 wgpu = { version = "27.0.1", default-features = false, features = ["dx12", "metal"] }

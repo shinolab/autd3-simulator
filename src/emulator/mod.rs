@@ -119,13 +119,15 @@ impl EmulatorWrapper {
             } else {
                 cpu.fpga().current_stm_idx()
             };
-            cpu.fpga().drives_at_inplace(
-                stm_segment,
-                idx,
-                emulator.phase_buffer,
-                emulator.output_mask_buffer,
-                emulator.drive_buffer,
-            );
+            unsafe {
+                cpu.fpga().drives_at_inplace(
+                    stm_segment,
+                    idx,
+                    emulator.phase_buffer.as_mut_ptr(),
+                    emulator.output_mask_buffer.as_mut_ptr(),
+                    emulator.drive_buffer.as_mut_ptr(),
+                )
+            };
             let mod_segment = cpu.fpga().current_mod_segment();
             let m = if mod_enable {
                 let mod_idx = cpu.fpga().current_mod_idx();
@@ -142,7 +144,7 @@ impl EmulatorWrapper {
                         * cpu
                             .fpga()
                             .to_pulse_width(d.intensity, m)
-                            .pulse_width::<u32>()
+                            .pulse_width()
                             .unwrap() as f32
                         / ULTRASOUND_PERIOD_COUNT as f32)
                         .sin();

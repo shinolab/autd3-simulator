@@ -1,8 +1,9 @@
 use std::{
-    sync::{Arc, RwLock},
+    sync::{Arc, RwLock, mpsc::SyncSender},
     time::Instant,
 };
 
+use autd3_core::link::TxMessage;
 use wgpu::InstanceFlags;
 use winit::{
     application::ApplicationHandler,
@@ -13,7 +14,7 @@ use winit::{
 use crate::{
     emulator::EmulatorWrapper,
     error::Result,
-    event::{EventResult, UserEvent},
+    event::{EventResult, Signal, UserEvent},
     renderer::Renderer,
     server::Server,
     state::State,
@@ -22,6 +23,7 @@ use crate::{
 
 pub struct Simulator {
     server: Option<Server>,
+    tx_buffer_queue: SyncSender<Vec<TxMessage>>,
     emulator: EmulatorWrapper,
     instance: wgpu::Instance,
     repaint_proxy: Option<EventLoopProxy<UserEvent>>,
@@ -35,8 +37,15 @@ pub struct Simulator {
 
 impl Simulator {
     pub fn run(event_loop: winit::event_loop::EventLoop<UserEvent>, state: State) -> Result<State> {
+        let (buffer_queue_sender, buffer_queue_receiver) = std::sync::mpsc::sync_channel(16);
+
         let rx_buf = Arc::new(RwLock::default());
-        let server = Server::new(state.port, rx_buf.clone(), event_loop.create_proxy())?;
+        let server = Server::new(
+            state.port,
+            rx_buf.clone(),
+            buffer_queue_receiver,
+            event_loop.create_proxy(),
+        )?;
 
         let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
             backends: wgpu::Backends::PRIMARY,
@@ -51,6 +60,7 @@ impl Simulator {
         let mut app = Self {
             instance,
             repaint_proxy: Some(event_loop.create_proxy()),
+            tx_buffer_queue: buffer_queue_sender,
             server: Some(server),
             emulator: EmulatorWrapper::new(rx_buf),
             windows_next_repaint_time: None,
@@ -105,14 +115,14 @@ impl Simulator {
         Ok(())
     }
 
-    fn update(&mut self, event: Option<&UserEvent>) {
+    fn update(&mut self, event: Option<Signal>) {
         let system_time = self.state.system_time();
         self.emulator.update(system_time);
 
-        if let Some(UserEvent::Server(signal)) = event {
+        if let Some(signal) = event {
             match signal {
                 crate::event::Signal::ConfigGeometry(geometry) => {
-                    self.emulator.initialize(geometry);
+                    self.emulator.initialize(&geometry);
                     self.renderer.as_mut().unwrap().initialize(&self.emulator);
 
                     self.update_flag.set(UpdateFlag::UPDATE_CAMERA, true);
@@ -126,12 +136,13 @@ impl Simulator {
                     self.update_flag.set(UpdateFlag::UPDATE_CONFIG, true);
                 }
                 crate::event::Signal::UpdateGeometry(geometry) => {
-                    self.emulator.update_geometry(geometry);
+                    self.emulator.update_geometry(&geometry);
 
                     self.update_flag.set(UpdateFlag::UPDATE_TRANS_POS, true);
                 }
                 crate::event::Signal::Send(tx) => {
-                    self.emulator.send(tx);
+                    self.emulator.send(&tx);
+                    self.tx_buffer_queue.send(tx).unwrap();
 
                     self.update_flag.set(UpdateFlag::UPDATE_TRANS_STATE, true);
                 }
@@ -237,10 +248,24 @@ impl Simulator {
     }
 
     fn on_user_event(&mut self, event: UserEvent) -> Result<EventResult> {
-        self.update(Some(&event));
-        if let Some(renderer) = &mut self.renderer {
-            return Ok(renderer.on_user_event(&event));
+        match event {
+            UserEvent::RequestRepaint {
+                cumulative_pass_nr,
+                when,
+            } => {
+                self.update(None);
+                if let Some(renderer) = &mut self.renderer {
+                    return Ok(renderer.on_user_event(when, cumulative_pass_nr));
+                }
+            }
+            UserEvent::Server(signal) => {
+                self.update(Some(signal));
+                if self.renderer.is_some() {
+                    return Ok(EventResult::RepaintNow);
+                }
+            }
         }
+
         Ok(EventResult::Wait)
     }
 
