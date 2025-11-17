@@ -263,11 +263,11 @@ impl CustomServer {
             }
         };
         unsafe {
-            let mut buf = std::slice::from_raw_parts_mut(
+            let buf = std::slice::from_raw_parts_mut(
                 tx_data.as_mut_ptr() as *mut u8,
                 tx_data.len() * std::mem::size_of::<TxMessage>(),
             );
-            stream.read_exact(&mut buf)?;
+            stream.read_exact(buf)?;
         }
 
         self.proxy
