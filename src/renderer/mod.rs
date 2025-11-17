@@ -3,7 +3,7 @@ mod egui_renderer;
 mod slice_renderer;
 mod transducer_renderer;
 
-use std::{num::NonZeroU32, sync::Arc};
+use std::{num::NonZeroU32, sync::Arc, time::Instant};
 
 use crate::{
     Matrix4, State, Vector3,
@@ -332,25 +332,15 @@ impl Renderer {
         }
     }
 
-    pub fn on_user_event(&self, event: &UserEvent) -> EventResult {
-        match event {
-            UserEvent::RequestRepaint {
-                when,
-                cumulative_pass_nr,
-            } => {
-                let current_pass_nr = self
-                    .egui_renderer
-                    .context()
-                    .cumulative_pass_nr_for(ViewportId::ROOT);
-                if current_pass_nr == *cumulative_pass_nr
-                    || current_pass_nr == *cumulative_pass_nr + 1
-                {
-                    EventResult::RepaintAt(*when)
-                } else {
-                    EventResult::Wait
-                }
-            }
-            _ => EventResult::RepaintNow,
+    pub fn on_user_event(&self, when: Instant, cumulative_pass_nr: u64) -> EventResult {
+        let current_pass_nr = self
+            .egui_renderer
+            .context()
+            .cumulative_pass_nr_for(ViewportId::ROOT);
+        if current_pass_nr == cumulative_pass_nr || current_pass_nr == cumulative_pass_nr + 1 {
+            EventResult::RepaintAt(when)
+        } else {
+            EventResult::Wait
         }
     }
 

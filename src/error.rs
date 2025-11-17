@@ -15,6 +15,12 @@ pub enum SimulatorError {
     ServerError(String),
 }
 
+impl SimulatorError {
+    pub fn server_error(msg: impl ToString) -> Self {
+        Self::ServerError(msg.to_string())
+    }
+}
+
 impl fmt::Display for SimulatorError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {

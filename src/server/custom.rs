@@ -7,6 +7,7 @@
 // - `0x03`: Send Data
 // - `0x04`: Read Data
 // - `0x05`: Close
+// - `0x10`: Hello (handshake)
 //
 // ## Response Status Codes
 //
@@ -14,6 +15,15 @@
 // - `0xFF`: Error
 //
 // ## Message Formats
+//
+// ### Hello (Handshake)
+// Request:
+// - 1 byte: message type (0x10)
+// - 2 bytes: protocol version (u16, little-endian)
+// - 11 bytes: magic string `AUTD3REMOTE`
+//
+// Response (Success):
+// - 1 byte: status (0x00 = OK)
 //
 // ### Configure/Update Geometry
 // Request:
@@ -26,24 +36,13 @@
 // Response (Success):
 // - 1 byte: status (0x00 = OK)
 //
-// Response (Error):
-// - 1 byte: status (0xFF = Error)
-// - 4 bytes: error message length (u32, little-endian)
-// - N bytes: error message (UTF-8 string)
-//
 // ### Send Data
 // Request:
 // - 1 byte: message type (0x03)
-// - 4 bytes: number of devices (u32, little-endian)
 // - Raw TxMessage data for each device
 //
 // Response (Success):
 // - 1 byte: status (0x00 = OK)
-//
-// Response (Error):
-// - 1 byte: status (0xFF = Error)
-// - 4 bytes: error message length (u32, little-endian)
-// - N bytes: error message (UTF-8 string)
 //
 // ### Read Data
 // Request:
@@ -51,13 +50,7 @@
 //
 // Response (Success):
 // - 1 byte: status (0x00 = OK)
-// - 4 bytes: number of devices (u32, little-endian)
 // - Raw RxMessage data for each device
-//
-// Response (Error):
-// - 1 byte: status (0xFF = Error)
-// - 4 bytes: error message length (u32, little-endian)
-// - N bytes: error message (UTF-8 string)
 //
 // ### Close
 // Request:
@@ -66,112 +59,168 @@
 // Response (Success):
 // - 1 byte: status (0x00 = OK)
 //
-// Response (Error):
+// ### Error Response
 // - 1 byte: status (0xFF = Error)
 // - 4 bytes: error message length (u32, little-endian)
 // - N bytes: error message (UTF-8 string)
 
+pub(crate) const MSG_CONFIG_GEOMETRY: u8 = 0x01;
+pub(crate) const MSG_UPDATE_GEOMETRY: u8 = 0x02;
+pub(crate) const MSG_SEND_DATA: u8 = 0x03;
+pub(crate) const MSG_READ_DATA: u8 = 0x04;
+pub(crate) const MSG_CLOSE: u8 = 0x05;
+pub(crate) const MSG_HELLO: u8 = 0x10;
+
+pub(crate) const MSG_OK: u8 = 0x00;
+pub(crate) const MSG_ERROR: u8 = 0xFF;
+
+pub(crate) const REMOTE_PROTOCOL_VERSION: u16 = 1;
+pub(crate) const REMOTE_PROTOCOL_MAGIC: &[u8; 11] = b"AUTD3REMOTE";
+
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
+use std::sync::mpsc::Receiver;
 use std::sync::{Arc, RwLock};
 
 use autd3_core::link::{RxMessage, TxMessage};
 use autd3_driver::geometry::Geometry;
 use winit::event_loop::EventLoopProxy;
 
-use crate::error::Result;
+use crate::error::{Result, SimulatorError};
 use crate::event::{Signal, UserEvent};
 
-const MSG_CONFIG_GEOMETRY: u8 = 0x01;
-const MSG_UPDATE_GEOMETRY: u8 = 0x02;
-const MSG_SEND_DATA: u8 = 0x03;
-const MSG_READ_DATA: u8 = 0x04;
-const MSG_CLOSE: u8 = 0x05;
-
-const STATUS_OK: u8 = 0x00;
-const STATUS_ERROR: u8 = 0xFF;
-
 pub struct CustomServer {
-    pub(crate) rx_buf: Arc<RwLock<Vec<RxMessage>>>,
-    pub(crate) proxy: EventLoopProxy<UserEvent>,
+    rx_buf: Arc<RwLock<Vec<RxMessage>>>,
+    rx_data: Option<Vec<u8>>,
+    tx_buffer_queue: Receiver<Vec<TxMessage>>,
+    proxy: EventLoopProxy<UserEvent>,
+    num_devices: usize,
 }
 
 unsafe impl Send for CustomServer {}
 unsafe impl Sync for CustomServer {}
 
 impl CustomServer {
-    pub fn new(rx_buf: Arc<RwLock<Vec<RxMessage>>>, proxy: EventLoopProxy<UserEvent>) -> Self {
-        Self { rx_buf, proxy }
+    pub fn new(
+        rx_buf: Arc<RwLock<Vec<RxMessage>>>,
+        tx_buffer_queue: Receiver<Vec<TxMessage>>,
+        proxy: EventLoopProxy<UserEvent>,
+    ) -> Self {
+        Self {
+            rx_buf,
+            rx_data: None,
+            tx_buffer_queue,
+            proxy,
+            num_devices: 0,
+        }
     }
 
-    fn write_error(stream: &mut TcpStream, error_msg: &str) -> std::io::Result<()> {
-        stream.write_all(&[STATUS_ERROR])?;
-        let msg_bytes = error_msg.as_bytes();
-        let msg_len = msg_bytes.len() as u32;
-        stream.write_all(&msg_len.to_le_bytes())?;
-        stream.write_all(msg_bytes)?;
-        Ok(())
-    }
-
-    fn handle_client(&self, mut stream: TcpStream) -> Result<()> {
+    pub fn run(mut self, listener: TcpListener) -> Result<()> {
         loop {
-            let mut msg_type = [0u8; 1];
+            let (stream, _addr) = listener.accept()?;
+            let _ = self.handle_client(stream);
+        }
+    }
+
+    fn handle_client(&mut self, mut stream: TcpStream) -> Result<()> {
+        let mut handshake_completed = false;
+
+        loop {
+            let mut msg_type = [0u8; size_of::<u8>()];
             if stream.read_exact(&mut msg_type).is_err() {
                 break;
             }
 
-            let result = match msg_type[0] {
-                MSG_CONFIG_GEOMETRY => self.handle_config_geometry(&mut stream),
-                MSG_UPDATE_GEOMETRY => self.handle_update_geometry(&mut stream),
-                MSG_SEND_DATA => self.handle_send_data(&mut stream),
-                MSG_READ_DATA => self.handle_read_data(&mut stream),
-                MSG_CLOSE => {
-                    let res = self.handle_close(&mut stream);
-                    if res.is_ok() {
-                        break;
+            let msg = msg_type[0];
+            let result = if msg == MSG_HELLO {
+                if handshake_completed {
+                    Err(SimulatorError::server_error("Handshake already completed"))
+                } else {
+                    match Self::handle_handshake(&mut stream) {
+                        Ok(()) => {
+                            handshake_completed = true;
+                            Ok(())
+                        }
+                        Err(e) => {
+                            eprintln!("Handshake failed: {}", e);
+                            Err(e)
+                        }
                     }
-                    res
                 }
-                _ => {
-                    break;
+            } else if !handshake_completed {
+                Err(SimulatorError::server_error(
+                    "Handshake is required before sending commands",
+                ))
+            } else {
+                match msg {
+                    MSG_CONFIG_GEOMETRY => self.handle_config_geometry(&mut stream),
+                    MSG_UPDATE_GEOMETRY => self.handle_update_geometry(&mut stream),
+                    MSG_SEND_DATA => self.handle_send_data(&mut stream),
+                    MSG_READ_DATA => self.handle_read_data(&mut stream),
+                    MSG_CLOSE => self.handle_close(&mut stream),
+                    other => Err(SimulatorError::server_error(format!(
+                        "Unknown message type: {}",
+                        other
+                    ))),
                 }
             };
 
-            if let Err(e) = result {
-                let _ = Self::write_error(&mut stream, &e.to_string());
-                break;
+            match result {
+                Ok(()) => {
+                    if msg == MSG_CLOSE {
+                        break;
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error handling client request: {}", e);
+                    let _ = Self::send_error(&mut stream, e);
+                    if !handshake_completed || msg == MSG_CLOSE {
+                        break;
+                    }
+                }
             }
         }
         Ok(())
     }
 
-    fn handle_config_geometry(&self, stream: &mut TcpStream) -> Result<()> {
-        let geometry = self.read_geometry(stream)?;
-        if self
-            .proxy
-            .send_event(UserEvent::Server(Signal::ConfigGeometry(geometry)))
-            .is_err()
-        {
-            return Err(crate::error::SimulatorError::ServerError(
-                "Simulator is closed".to_string(),
-            ));
+    fn handle_handshake(stream: &mut TcpStream) -> Result<()> {
+        let mut version_buf = [0u8; size_of::<u16>()];
+        stream.read_exact(&mut version_buf)?;
+        let version = u16::from_le_bytes(version_buf);
+        if version != REMOTE_PROTOCOL_VERSION {
+            return Err(SimulatorError::server_error(format!(
+                "Unsupported protocol version: {}",
+                version
+            )));
         }
-        stream.write_all(&[STATUS_OK])?;
+
+        let mut magic_buf = [0u8; REMOTE_PROTOCOL_MAGIC.len()];
+        stream.read_exact(&mut magic_buf)?;
+        if &magic_buf != REMOTE_PROTOCOL_MAGIC {
+            eprintln!("Invalid client magic: {:?}", magic_buf);
+            return Err(SimulatorError::server_error("Invalid client magic"));
+        }
+
+        stream.write_all(&[MSG_OK])?;
+        Ok(())
+    }
+
+    fn handle_config_geometry(&mut self, stream: &mut TcpStream) -> Result<()> {
+        let geometry = self.read_geometry(stream)?;
+        self.num_devices = geometry.num_devices();
+        self.proxy
+            .send_event(UserEvent::Server(Signal::ConfigGeometry(geometry)))
+            .map_err(|_e| SimulatorError::server_error("Simulator is closed"))?;
+        stream.write_all(&[MSG_OK])?;
         Ok(())
     }
 
     fn handle_update_geometry(&self, stream: &mut TcpStream) -> Result<()> {
         let geometry = self.read_geometry(stream)?;
-        if self
-            .proxy
+        self.proxy
             .send_event(UserEvent::Server(Signal::UpdateGeometry(geometry)))
-            .is_err()
-        {
-            return Err(crate::error::SimulatorError::ServerError(
-                "Simulator is closed".to_string(),
-            ));
-        }
-        stream.write_all(&[STATUS_OK])?;
+            .map_err(|_e| SimulatorError::server_error("Simulator is closed"))?;
+        stream.write_all(&[MSG_OK])?;
         Ok(())
     }
 
@@ -179,104 +228,101 @@ impl CustomServer {
         let mut num_devices_buf = [0u8; 4];
         stream.read_exact(&mut num_devices_buf)?;
         let num_devices = u32::from_le_bytes(num_devices_buf);
+        Ok(autd3_core::geometry::Geometry::new(
+            (0..num_devices)
+                .map(|_| {
+                    let mut pos_buf = [0u8; 12];
+                    stream.read_exact(&mut pos_buf)?;
+                    let x = f32::from_le_bytes([pos_buf[0], pos_buf[1], pos_buf[2], pos_buf[3]]);
+                    let y = f32::from_le_bytes([pos_buf[4], pos_buf[5], pos_buf[6], pos_buf[7]]);
+                    let z = f32::from_le_bytes([pos_buf[8], pos_buf[9], pos_buf[10], pos_buf[11]]);
 
-        let mut devices = Vec::new();
+                    let mut rot_buf = [0u8; 16];
+                    stream.read_exact(&mut rot_buf)?;
+                    let w = f32::from_le_bytes([rot_buf[0], rot_buf[1], rot_buf[2], rot_buf[3]]);
+                    let i = f32::from_le_bytes([rot_buf[4], rot_buf[5], rot_buf[6], rot_buf[7]]);
+                    let j = f32::from_le_bytes([rot_buf[8], rot_buf[9], rot_buf[10], rot_buf[11]]);
+                    let k =
+                        f32::from_le_bytes([rot_buf[12], rot_buf[13], rot_buf[14], rot_buf[15]]);
 
-        for _ in 0..num_devices {
-            let mut pos_buf = [0u8; 12];
-            stream.read_exact(&mut pos_buf)?;
-            let x = f32::from_le_bytes([pos_buf[0], pos_buf[1], pos_buf[2], pos_buf[3]]);
-            let y = f32::from_le_bytes([pos_buf[4], pos_buf[5], pos_buf[6], pos_buf[7]]);
-            let z = f32::from_le_bytes([pos_buf[8], pos_buf[9], pos_buf[10], pos_buf[11]]);
-
-            let mut rot_buf = [0u8; 16];
-            stream.read_exact(&mut rot_buf)?;
-            let w = f32::from_le_bytes([rot_buf[0], rot_buf[1], rot_buf[2], rot_buf[3]]);
-            let i = f32::from_le_bytes([rot_buf[4], rot_buf[5], rot_buf[6], rot_buf[7]]);
-            let j = f32::from_le_bytes([rot_buf[8], rot_buf[9], rot_buf[10], rot_buf[11]]);
-            let k = f32::from_le_bytes([rot_buf[12], rot_buf[13], rot_buf[14], rot_buf[15]]);
-
-            devices.push(
-                autd3_core::devices::AUTD3 {
-                    pos: autd3_core::geometry::Point3::new(x, y, z),
-                    rot: autd3_core::geometry::UnitQuaternion { w, i, j, k },
-                }
-                .into(),
-            );
-        }
-
-        Ok(autd3_core::geometry::Geometry::new(devices))
+                    Ok(autd3_core::devices::AUTD3 {
+                        pos: autd3_core::geometry::Point3::new(x, y, z),
+                        rot: autd3_core::geometry::UnitQuaternion { w, i, j, k },
+                    }
+                    .into())
+                })
+                .collect::<Result<Vec<_>>>()?,
+        ))
     }
 
     fn handle_send_data(&self, stream: &mut TcpStream) -> Result<()> {
-        let mut num_devices_buf = [0u8; 4];
-        stream.read_exact(&mut num_devices_buf)?;
-        let num_devices = u32::from_le_bytes(num_devices_buf) as usize;
-
-        let tx_size = std::mem::size_of::<TxMessage>();
-        let mut tx_data = vec![0u8; tx_size * num_devices];
-        stream.read_exact(&mut tx_data)?;
-
-        let tx_messages: Vec<TxMessage> = tx_data
-            .chunks_exact(tx_size)
-            .map(|chunk| unsafe { std::ptr::read(chunk.as_ptr() as *const TxMessage) })
-            .collect();
-
-        if self
-            .proxy
-            .send_event(UserEvent::Server(Signal::Send(tx_messages)))
-            .is_err()
-        {
-            return Err(crate::error::SimulatorError::ServerError(
-                "Simulator is closed".to_string(),
-            ));
+        let mut tx_data = match self.tx_buffer_queue.try_recv() {
+            Ok(data) => data,
+            Err(_) => {
+                vec![TxMessage::new(); self.num_devices]
+            }
+        };
+        unsafe {
+            let buf = std::slice::from_raw_parts_mut(
+                tx_data.as_mut_ptr() as *mut u8,
+                tx_data.len() * std::mem::size_of::<TxMessage>(),
+            );
+            stream.read_exact(buf)?;
         }
 
-        stream.write_all(&[STATUS_OK])?;
+        self.proxy
+            .send_event(UserEvent::Server(Signal::Send(tx_data)))
+            .map_err(|_e| SimulatorError::server_error("Simulator is closed"))?;
+
+        stream.write_all(&[MSG_OK])?;
         Ok(())
     }
 
-    fn handle_read_data(&self, stream: &mut TcpStream) -> Result<()> {
+    fn handle_read_data(&mut self, stream: &mut TcpStream) -> Result<()> {
         let rx_data = {
+            let mut rx_data = match self.rx_data.take() {
+                Some(buf) if buf.len() == self.num_devices * std::mem::size_of::<RxMessage>() => {
+                    buf
+                }
+                _ => vec![0x00; self.num_devices * std::mem::size_of::<RxMessage>()],
+            };
             let rx = self.rx_buf.read().unwrap();
-            let num_devices = rx.len() as u32;
-            let rx_size = std::mem::size_of::<RxMessage>();
-            let mut data = Vec::with_capacity(4 + rx_size * rx.len());
-            data.extend_from_slice(&num_devices.to_le_bytes());
-            for rx_msg in rx.iter() {
-                let bytes = unsafe {
-                    std::slice::from_raw_parts(rx_msg as *const RxMessage as *const u8, rx_size)
-                };
-                data.extend_from_slice(bytes);
+            unsafe {
+                std::ptr::copy_nonoverlapping(
+                    rx.as_ptr(),
+                    rx_data.as_mut_ptr() as *mut RxMessage,
+                    rx.len(),
+                );
             }
-            data
+            rx_data
         };
 
-        stream.write_all(&[STATUS_OK])?;
+        stream.write_all(&[MSG_OK])?;
         stream.write_all(&rx_data)?;
+
+        self.rx_data = Some(rx_data);
 
         Ok(())
     }
 
     fn handle_close(&self, stream: &mut TcpStream) -> Result<()> {
-        if self
-            .proxy
+        self.proxy
             .send_event(UserEvent::Server(Signal::Close))
-            .is_err()
-        {
-            return Err(crate::error::SimulatorError::ServerError(
-                "Simulator is closed".to_string(),
-            ));
-        }
-        stream.write_all(&[STATUS_OK])?;
+            .map_err(|_e| SimulatorError::server_error("Simulator is closed"))?;
+        stream.write_all(&[MSG_OK])?;
         Ok(())
     }
 
-    pub fn run(self, listener: TcpListener) -> Result<()> {
-        loop {
-            let (stream, _addr) = listener.accept()?;
+    fn send_error(stream: &mut TcpStream, error: SimulatorError) -> std::io::Result<()> {
+        let error_msg = error.to_string();
+        let error_bytes = error_msg.as_bytes();
+        let error_len = error_bytes.len() as u32;
 
-            let _ = self.handle_client(stream);
-        }
+        let mut buffer = Vec::with_capacity(size_of::<u8>() + size_of::<u32>() + error_bytes.len());
+        buffer.push(MSG_ERROR);
+        buffer.extend_from_slice(&error_len.to_le_bytes());
+        buffer.extend_from_slice(error_bytes);
+
+        stream.write_all(&buffer)
     }
 }

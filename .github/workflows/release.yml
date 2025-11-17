@@ -8,7 +8,7 @@ on:
 jobs:
   release:
     name: create-github-release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
     - id: create_release
       uses: ncipollo/release-action@v1
