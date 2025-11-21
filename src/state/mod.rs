@@ -6,7 +6,7 @@ use autd3_driver::{
 use glam::EulerRot;
 use serde::{Deserialize, Serialize};
 
-use crate::{Quaternion, Vector2, Vector3, ZPARITY};
+use crate::{Quaternion, Vector2, Vector3};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CameraState {
@@ -83,18 +83,30 @@ impl std::default::Default for State {
             window_size: (800, 600),
             ui_scale: 1.0,
             camera: CameraState {
-                pos: Vector3::new(86.6252 * mm, -533.2867 * mm, 150.0 * mm * ZPARITY),
-                rot: Vector3::new(90.0 * ZPARITY, 0., 0.),
+                #[cfg(not(feature = "unity"))]
+                pos: Vector3::new(86.6252 * mm, -533.2867 * mm, 150.0 * mm),
+                #[cfg(feature = "unity")]
+                pos: Vector3::new(86.6252 * mm, 150.0 * mm, -533.2867 * mm),
+                #[cfg(not(feature = "unity"))]
+                rot: Vector3::new(90.0, 0., 0.),
+                #[cfg(feature = "unity")]
+                rot: Vector3::new(0.0, 0., 0.),
                 fov: 45.,
                 near_clip: 0.1 * mm,
                 far_clip: 1000. * mm,
                 move_speed: 1. * mm,
             },
             slice: SliceState {
-                pos: Vector3::new(86.6252 * mm, 66.7133 * mm, 150.0 * mm * ZPARITY),
-                rot: Vector3::new(90.0 * ZPARITY, 0., 0.),
+                #[cfg(not(feature = "unity"))]
+                pos: Vector3::new(86.6252 * mm, 66.7133 * mm, 150.0 * mm),
+                #[cfg(feature = "unity")]
+                pos: Vector3::new(86.6252 * mm, 150.0 * mm, 66.7133 * mm),
+                #[cfg(not(feature = "unity"))]
+                rot: Vector3::new(90.0, 0., 0.),
+                #[cfg(feature = "unity")]
+                rot: Vector3::new(0.0, 0., 0.),
                 size: Vector2::new(300.0 * mm, 300.0 * mm),
-                pressure_max: 5000.,
+                pressure_max: 10000.,
             },
             background: egui::Color32::from_rgb(60, 60, 60),
             sound_speed: 340.0e3 * mm,

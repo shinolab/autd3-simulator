@@ -545,8 +545,8 @@ impl EguiRenderer {
                 ui.label("Width:");
                 let response = ui.add(
                     DragValue::new(&mut state.slice.size.x)
-                        .speed(1.)
-                        .range(1.0..=1024.),
+                        .speed(1. * mm)
+                        .range(1.0 * mm..=1024. * mm),
                 );
                 ui.end_row();
 
@@ -554,8 +554,8 @@ impl EguiRenderer {
                 let response = response.union(
                     ui.add(
                         DragValue::new(&mut state.slice.size.y)
-                            .speed(1.)
-                            .range(1.0..=1024.),
+                            .speed(1. * mm)
+                            .range(1.0 * mm..=1024. * mm),
                     ),
                 );
                 ui.end_row();
