@@ -89,9 +89,9 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "autd3-core"
-version = "38.0.0"
+version = "38.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3fad9839c0bda9e2edcd0e2a34c96905ee0029cdee57ca23bcec10ab289db3be"
+checksum = "2fd786d0c20778c4e776d754e3c458e105052186bcf315c6a393eacb9afd52d1"
 dependencies = [
  "autd3-derive",
  "time",
@@ -99,24 +99,24 @@ dependencies = [
 
 [[package]]
 name = "autd3-derive"
-version = "38.0.0"
+version = "38.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3b3808efd124f2ebc9837c03ed807d45b01f0be1bde692ccdb7594433e72fb7a"
+checksum = "43d983cb0a319eae77df562e5f42da183815c80d08abf4240ef85af1fd8cf98b"
 
 [[package]]
 name = "autd3-driver"
-version = "38.0.0"
+version = "38.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8eb900d42a343e53d653da42b964894bb9f48d4353ea0716500362a1bc84df86"
+checksum = "585d3d6a60f2d26e29fc8352f0b7018ede92186d7a3cac1f899139949262081d"
 dependencies = [
  "autd3-core",
 ]
 
 [[package]]
 name = "autd3-firmware-emulator"
-version = "38.0.0"
+version = "38.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1d38baa3f1082a73178b2568dd5d09e003a268a4ca7d54fbbf8c46787e758bf"
+checksum = "bc6024aaa61831f75fd4cadc419c011d01c192c5ff244aeeb97ba3c978038a9d"
 dependencies = [
  "autd3-core",
  "autd3-driver",
@@ -124,9 +124,9 @@ dependencies = [
 
 [[package]]
 name = "autd3-link-remote"
-version = "38.0.0"
+version = "38.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "390e87829139367d7e59d309b94cbc1573eecd42c68c4c1caa4767a861774b70"
+checksum = "485379abbec151e6dafd1a525c76d359ff920c42a6d809e132c51bfba50b12ca"
 dependencies = [
  "autd3-core",
  "tokio",
@@ -135,7 +135,7 @@ dependencies = [
 
 [[package]]
 name = "autd3-simulator"
-version = "38.0.0"
+version = "38.0.1"
 dependencies = [
  "autd3-core",
  "autd3-driver",
@@ -268,9 +268,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.46"
+version = "1.2.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b97463e1064cb1b1c1384ad0a0b9c8abd0988e2a91f52606c80ef14aadb63e36"
+checksum = "cd405d82c84ff7f35739f175f67d8b9fb7687a0e84ccdc78bd3568839827cf07"
 dependencies = [
  "find-msvc-tools",
  "jobserver",
@@ -704,9 +704,9 @@ dependencies = [
 
 [[package]]
 name = "hashbrown"
-version = "0.16.0"
+version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5419bdc4f6a9207fbeba6d11b604d481addf78ecd10c11ad51e76c2f6482748d"
+checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
 dependencies = [
  "foldhash",
 ]
@@ -738,9 +738,9 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.12.0"
+version = "2.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6717a8d2a5a929a1a2eb43a12812498ed141a0bcfb7e8f7844fbdbe4303bba9f"
+checksum = "0ad4bb2b565bca0645f4d68c5c9af97fba094e9791da685bf83cb5f3ce74acf2"
 dependencies = [
  "equivalent",
  "hashbrown",
@@ -1672,9 +1672,9 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "syn"
-version = "2.0.110"
+version = "2.0.111"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a99801b5bd34ede4cf3fc688c5919368fea4e4814a4664359503e6015b280aea"
+checksum = "390cc9a294ab71bdb1aa2e99d13be9c753cd2d7bd6560c77118597410c4d2e87"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2595,18 +2595,18 @@ checksum = "b9cc00251562a284751c9973bace760d86c0276c471b4be569fe6b068ee97a56"
 
 [[package]]
 name = "zerocopy"
-version = "0.8.27"
+version = "0.8.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0894878a5fa3edfd6da3f88c4805f4c8558e2b996227a3d864f47fe11e38282c"
+checksum = "4ea879c944afe8a2b25fef16bb4ba234f47c694565e97383b36f3a878219065c"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.27"
+version = "0.8.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88d2b8d9c68ad2b9e4340d7832716a4d21a22a1154777ad56ea55c51a9cf3831"
+checksum = "cf955aa904d6040f70dc8e9384444cb1030aed272ba3cb09bbc4ab9e7c1f34f5"
 dependencies = [
  "proc-macro2",
  "quote",
