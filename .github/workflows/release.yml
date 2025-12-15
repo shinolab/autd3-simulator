@@ -18,7 +18,7 @@ jobs:
         prerelease: false
     - run: |
         echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
-    - uses: actions/upload-artifact@v5
+    - uses: actions/upload-artifact@v6
       with:
         name: release_url
         path: release_url.txt
@@ -64,7 +64,7 @@ jobs:
           cp ./target/release/autd3-simulator-unity autd3-simulator-unity 
           tar -zcvf assets.tar.gz autd3-simulator autd3-simulator-unity LICENSE ThirdPartyNotices.txt
         if: ${{ matrix.os != 'windows-latest'}}
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: release_url
       - id: get_release_info
