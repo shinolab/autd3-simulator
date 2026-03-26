@@ -154,7 +154,12 @@ impl Renderer {
                 return Ok(EventResult::RepaintNow);
             }
             wgpu::CurrentSurfaceTexture::Outdated => {
-                surface.configure(device, surface_config);
+                let size = window.inner_size();
+                if size.width > 0 && size.height > 0 {
+                    surface_config.width = size.width;
+                    surface_config.height = size.height;
+                    surface.configure(device, surface_config);
+                }
                 return Ok(EventResult::RepaintNow);
             }
             wgpu::CurrentSurfaceTexture::Lost => {
