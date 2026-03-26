@@ -8,11 +8,11 @@ pub enum SimulatorError {
     CreateSurfaceError(wgpu::CreateSurfaceError),
     RequestDeviceError(wgpu::RequestDeviceError),
     RequestAdapterError(wgpu::RequestAdapterError),
-    SurfaceError(wgpu::SurfaceError),
     ImageError(image::ImageError),
     IoError(std::io::Error),
     NoSuitableFormat,
     ServerError(String),
+    SurfaceLost,
 }
 
 impl SimulatorError {
@@ -30,11 +30,11 @@ impl fmt::Display for SimulatorError {
             Self::CreateSurfaceError(e) => write!(f, "{}", e),
             Self::RequestDeviceError(e) => write!(f, "{}", e),
             Self::RequestAdapterError(e) => write!(f, "{}", e),
-            Self::SurfaceError(e) => write!(f, "{}", e),
             Self::ImageError(e) => write!(f, "{}", e),
             Self::IoError(e) => write!(f, "{}", e),
             Self::NoSuitableFormat => write!(f, "Failed to select proper surface texture format"),
             Self::ServerError(e) => write!(f, "{}", e),
+            Self::SurfaceLost => write!(f, "The surface has been lost and needs to be recreated"),
         }
     }
 }
@@ -48,11 +48,11 @@ impl Error for SimulatorError {
             Self::CreateSurfaceError(e) => Some(e),
             Self::RequestDeviceError(e) => Some(e),
             Self::RequestAdapterError(e) => Some(e),
-            Self::SurfaceError(e) => Some(e),
             Self::ImageError(e) => Some(e),
             Self::IoError(e) => Some(e),
             Self::NoSuitableFormat => None,
             Self::ServerError(_) => None,
+            Self::SurfaceLost => None,
         }
     }
 }
@@ -90,12 +90,6 @@ impl From<wgpu::RequestDeviceError> for SimulatorError {
 impl From<wgpu::RequestAdapterError> for SimulatorError {
     fn from(e: wgpu::RequestAdapterError) -> Self {
         Self::RequestAdapterError(e)
-    }
-}
-
-impl From<wgpu::SurfaceError> for SimulatorError {
-    fn from(e: wgpu::SurfaceError) -> Self {
-        Self::SurfaceError(e)
     }
 }
 

@@ -160,3 +160,8 @@ tag = "objc2-encode-${VERSION}"
 name = "objc2-foundation"
 path = "LICENSE.txt"
 tag = "frameworks-${VERSION}"
+
+[[dep]]
+name = "accesskit"
+path = "LICENSE-MIT"
+tag = "accesskit-v${VERSION}"

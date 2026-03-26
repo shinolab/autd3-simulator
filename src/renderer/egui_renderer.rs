@@ -139,7 +139,7 @@ impl EguiRenderer {
 
         let close_requested = raw_input.viewport().close_requested();
 
-        let full_output = self.egui_winit.egui_ctx().run(raw_input, |egui_ctx| {
+        let full_output = self.egui_winit.egui_ctx().run_ui(raw_input, |egui_ctx| {
             if waiting {
                 self._waiting(egui_ctx);
             } else {
@@ -315,6 +315,7 @@ impl EguiRenderer {
             timestamp_writes: None,
             label: Some("egui main render pass"),
             occlusion_query_set: None,
+            multiview_mask: None,
         });
 
         self.renderer.render(
@@ -445,7 +446,7 @@ impl EguiRenderer {
                 });
             });
 
-        if !ctx.wants_pointer_input() {
+        if !ctx.egui_wants_pointer_input() {
             ctx.input(|input| {
                 Self::update_camera_by_mouse(input, state, update_flag);
             });

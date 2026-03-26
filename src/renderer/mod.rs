@@ -142,7 +142,25 @@ impl Renderer {
             pixels_per_point: window.scale_factor() as f32 * state.ui_scale,
         };
 
-        let surface_texture = surface.get_current_texture()?;
+        let surface_texture = match surface.get_current_texture() {
+            wgpu::CurrentSurfaceTexture::Success(surface_texture) => surface_texture,
+            wgpu::CurrentSurfaceTexture::Suboptimal(surface_texture) => {
+                surface.configure(device, surface_config);
+                surface_texture
+            }
+            wgpu::CurrentSurfaceTexture::Timeout
+            | wgpu::CurrentSurfaceTexture::Occluded
+            | wgpu::CurrentSurfaceTexture::Validation => {
+                return Ok(EventResult::RepaintNow);
+            }
+            wgpu::CurrentSurfaceTexture::Outdated => {
+                surface.configure(device, surface_config);
+                return Ok(EventResult::RepaintNow);
+            }
+            wgpu::CurrentSurfaceTexture::Lost => {
+                return Err(SimulatorError::SurfaceLost);
+            }
+        };
 
         let surface_view = surface_texture
             .texture
@@ -182,6 +200,7 @@ impl Renderer {
                     }),
                     timestamp_writes: None,
                     occlusion_query_set: None,
+                    multiview_mask: None,
                 });
                 transducer_renderer.render(&mut rpass);
                 slice_renderer.render(&mut rpass);

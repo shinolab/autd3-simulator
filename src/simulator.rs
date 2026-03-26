@@ -4,7 +4,7 @@ use std::{
 };
 
 use autd3_core::link::TxMessage;
-use wgpu::InstanceFlags;
+use wgpu::{InstanceFlags, MemoryBudgetThresholds};
 use winit::{
     application::ApplicationHandler,
     event_loop::{ActiveEventLoop, ControlFlow, EventLoopProxy},
@@ -47,14 +47,16 @@ impl Simulator {
             event_loop.create_proxy(),
         )?;
 
-        let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
             backends: wgpu::Backends::PRIMARY,
             flags: if state.debug {
                 InstanceFlags::VALIDATION | InstanceFlags::GPU_BASED_VALIDATION
             } else {
                 InstanceFlags::empty()
             },
-            ..Default::default()
+            memory_budget_thresholds: MemoryBudgetThresholds::default(),
+            backend_options: wgpu::BackendOptions::from_env_or_default(),
+            display: None,
         });
 
         let mut app = Self {
