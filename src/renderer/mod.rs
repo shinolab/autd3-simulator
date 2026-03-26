@@ -3,7 +3,7 @@ mod egui_renderer;
 mod slice_renderer;
 mod transducer_renderer;
 
-use std::{num::NonZeroU32, sync::Arc, time::Instant};
+use std::{num::NonZeroU32, sync::Arc, time::{Duration, Instant}};
 
 use crate::{
     Matrix4, State, Vector3,
@@ -145,10 +145,16 @@ impl Renderer {
         let (surface_texture, needs_reconfigure) = match surface.get_current_texture() {
             wgpu::CurrentSurfaceTexture::Success(surface_texture) => (surface_texture, false),
             wgpu::CurrentSurfaceTexture::Suboptimal(surface_texture) => (surface_texture, true),
-            wgpu::CurrentSurfaceTexture::Timeout
-            | wgpu::CurrentSurfaceTexture::Occluded
-            | wgpu::CurrentSurfaceTexture::Validation => {
-                return Ok(EventResult::RepaintNow);
+            wgpu::CurrentSurfaceTexture::Timeout => {
+                return Ok(EventResult::RepaintAt(
+                    Instant::now() + Duration::from_millis(100),
+                ));
+            }
+            wgpu::CurrentSurfaceTexture::Occluded => {
+                return Ok(EventResult::Wait);
+            }
+            wgpu::CurrentSurfaceTexture::Validation => {
+                return Err(SimulatorError::SurfaceValidation);
             }
             wgpu::CurrentSurfaceTexture::Outdated => {
                 let size = window.inner_size();

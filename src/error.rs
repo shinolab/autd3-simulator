@@ -13,6 +13,7 @@ pub enum SimulatorError {
     NoSuitableFormat,
     ServerError(String),
     SurfaceLost,
+    SurfaceValidation,
 }
 
 impl SimulatorError {
@@ -35,6 +36,7 @@ impl fmt::Display for SimulatorError {
             Self::NoSuitableFormat => write!(f, "Failed to select proper surface texture format"),
             Self::ServerError(e) => write!(f, "{}", e),
             Self::SurfaceLost => write!(f, "The surface has been lost and needs to be recreated"),
+            Self::SurfaceValidation => write!(f, "The surface encountered a validation error"),
         }
     }
 }
@@ -53,6 +55,7 @@ impl Error for SimulatorError {
             Self::NoSuitableFormat => None,
             Self::ServerError(_) => None,
             Self::SurfaceLost => None,
+            Self::SurfaceValidation => None,
         }
     }
 }
