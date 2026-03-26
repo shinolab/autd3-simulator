@@ -83,19 +83,38 @@ impl DepWorkaround {
             } else {
                 return Ok(());
             };
-            let url = if let Some(tag) = tag {
-                format!("{}/refs/tags/{}/{}", repo, tag, path)
-            } else {
-                format!("{}/refs/heads/master/{}", repo, path)
-            };
-            let res = reqwest::blocking::get(&url)?;
-            if !res.status().is_success() {
-                anyhow::bail!(
-                    "failed to fetch license file from {}: {}",
-                    url,
-                    res.status()
-                );
+            let mut res = None;
+            let mut last_err = None;
+            for p in path.split('|') {
+                let url = if let Some(tag) = &tag {
+                    format!("{}/refs/tags/{}/{}", repo, tag, p)
+                } else {
+                    format!("{}/refs/heads/master/{}", repo, p)
+                };
+                match reqwest::blocking::get(&url) {
+                    Ok(r) if r.status().is_success() => {
+                        res = Some(r);
+                        break;
+                    }
+                    Ok(r) => {
+                        last_err = Some(anyhow::anyhow!(
+                            "failed to fetch license file from {}: {}",
+                            url,
+                            r.status()
+                        ))
+                    }
+                    Err(e) => {
+                        last_err = Some(anyhow::anyhow!(
+                            "failed to fetch license file from {}: {}",
+                            url,
+                            e
+                        ))
+                    }
+                }
             }
+            let res = res.ok_or_else(|| {
+                last_err.unwrap_or_else(|| anyhow::anyhow!("no path found for crate {}", krate.name))
+            })?;
             writeln!(writer)?;
             writeln!(writer, "{}", res.text()?)?;
         } else {
