@@ -3,7 +3,7 @@ mod egui_renderer;
 mod slice_renderer;
 mod transducer_renderer;
 
-use std::{num::NonZeroU32, sync::Arc, time::Instant};
+use std::{num::NonZeroU32, sync::Arc, time::{Duration, Instant}};
 
 use crate::{
     Matrix4, State, Vector3,
@@ -142,7 +142,33 @@ impl Renderer {
             pixels_per_point: window.scale_factor() as f32 * state.ui_scale,
         };
 
-        let surface_texture = surface.get_current_texture()?;
+        let (surface_texture, needs_reconfigure) = match surface.get_current_texture() {
+            wgpu::CurrentSurfaceTexture::Success(surface_texture) => (surface_texture, false),
+            wgpu::CurrentSurfaceTexture::Suboptimal(surface_texture) => (surface_texture, true),
+            wgpu::CurrentSurfaceTexture::Timeout => {
+                return Ok(EventResult::RepaintAt(
+                    Instant::now() + Duration::from_millis(100),
+                ));
+            }
+            wgpu::CurrentSurfaceTexture::Occluded => {
+                return Ok(EventResult::Wait);
+            }
+            wgpu::CurrentSurfaceTexture::Validation => {
+                return Err(SimulatorError::SurfaceValidation);
+            }
+            wgpu::CurrentSurfaceTexture::Outdated => {
+                let size = window.inner_size();
+                if size.width > 0 && size.height > 0 {
+                    surface_config.width = size.width;
+                    surface_config.height = size.height;
+                    surface.configure(device, surface_config);
+                }
+                return Ok(EventResult::RepaintNow);
+            }
+            wgpu::CurrentSurfaceTexture::Lost => {
+                return Err(SimulatorError::SurfaceLost);
+            }
+        };
 
         let surface_view = surface_texture
             .texture
@@ -182,6 +208,7 @@ impl Renderer {
                     }),
                     timestamp_writes: None,
                     occlusion_query_set: None,
+                    multiview_mask: None,
                 });
                 transducer_renderer.render(&mut rpass);
                 slice_renderer.render(&mut rpass);
@@ -206,6 +233,10 @@ impl Renderer {
 
         queue.submit(Some(encoder.finish()));
         surface_texture.present();
+
+        if needs_reconfigure {
+            surface.configure(device, surface_config);
+        }
 
         Ok(result)
     }

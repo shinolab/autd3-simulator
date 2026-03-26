@@ -127,7 +127,7 @@ name = "block"
 
 [[dep]]
 name = "block2"
-path = "LICENSE.txt"
+path = "LICENSE.txt|LICENSE.md"
 tag = "block2-${VERSION}"
 
 [[dep]]
@@ -138,17 +138,17 @@ name = "malloc_buf"
 
 [[dep]]
 name = "objc-sys"
-path = "LICENSE.txt"
+path = "LICENSE.txt|LICENSE.md"
 tag = "objc-sys-${VERSION}"
 
 [[dep]]
 name = "objc2"
-path = "LICENSE.txt"
+path = "LICENSE.txt|LICENSE.md"
 tag = "objc2-${VERSION}"
 
 [[dep]]
 name = "objc2-app-kit"
-path = "LICENSE.txt"
+path = "LICENSE.txt|LICENSE.md"
 tag = "frameworks-${VERSION}"
 
 [[dep]]
@@ -158,5 +158,25 @@ tag = "objc2-encode-${VERSION}"
 
 [[dep]]
 name = "objc2-foundation"
-path = "LICENSE.txt"
+path = "LICENSE.txt|LICENSE.md"
 tag = "frameworks-${VERSION}"
+
+[[dep]]
+name = "objc2-core-foundation"
+path = "LICENSE.txt|LICENSE.md"
+tag = "frameworks-${VERSION}"
+
+[[dep]]
+name = "objc2-metal"
+path = "LICENSE.txt|LICENSE.md"
+tag = "frameworks-${VERSION}"
+
+[[dep]]
+name = "objc2-quartz-core"
+path = "LICENSE.txt|LICENSE.md"
+tag = "frameworks-${VERSION}"
+
+[[dep]]
+name = "accesskit"
+path = "LICENSE-MIT"
+tag = "accesskit-v${VERSION}"
