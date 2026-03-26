@@ -142,12 +142,9 @@ impl Renderer {
             pixels_per_point: window.scale_factor() as f32 * state.ui_scale,
         };
 
-        let surface_texture = match surface.get_current_texture() {
-            wgpu::CurrentSurfaceTexture::Success(surface_texture) => surface_texture,
-            wgpu::CurrentSurfaceTexture::Suboptimal(surface_texture) => {
-                surface.configure(device, surface_config);
-                surface_texture
-            }
+        let (surface_texture, needs_reconfigure) = match surface.get_current_texture() {
+            wgpu::CurrentSurfaceTexture::Success(surface_texture) => (surface_texture, false),
+            wgpu::CurrentSurfaceTexture::Suboptimal(surface_texture) => (surface_texture, true),
             wgpu::CurrentSurfaceTexture::Timeout
             | wgpu::CurrentSurfaceTexture::Occluded
             | wgpu::CurrentSurfaceTexture::Validation => {
@@ -230,6 +227,10 @@ impl Renderer {
 
         queue.submit(Some(encoder.finish()));
         surface_texture.present();
+
+        if needs_reconfigure {
+            surface.configure(device, surface_config);
+        }
 
         Ok(result)
     }
