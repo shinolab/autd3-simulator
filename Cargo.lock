@@ -511,9 +511,9 @@ dependencies = [
 
 [[package]]
 name = "egui-winit"
-version = "0.34.0"
+version = "0.34.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ed6af7dad7dd045b77731fe6dc291b835489a104d3cd2428a945e71e2265df3"
+checksum = "967c5b323625d46d46a59b5daba3fef742248d27693cc18972458619858c4239"
 dependencies = [
  "bytemuck",
  "egui",
